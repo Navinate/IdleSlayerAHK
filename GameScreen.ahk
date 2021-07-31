@@ -3,10 +3,11 @@
 SendMode Input	; Recommended for new scripts due to its superior speed and reliability.
 SetWorkingDir %A_ScriptDir%	; Ensures a consistent starting directory.
 #SingleInstance, Force
-#Include, ScreenResolution.ahk
 #Include, Utils.ahk
 #Include, PixelInfo.ahk
+#Include, ScreenResolution.ahk
 #Include, AscensionMenu.ahk
+#Include, EquipmentMenu.ahk
 
 Class GameScreen
 {
@@ -19,8 +20,8 @@ Class GameScreen
         this.SRC := New ScreenResolutionController(this.ResolutionX, this.ResolutionY, Width, Height)
 
         this.InitBasicButtons()
-        this.InitAscensionMenu()
-        ; this.InitEquipmentMenu()
+        this.AscensionMenu := New AscensionMenu(this.SRC)
+        this.EquipmentMenu := New EquipmentMenu(this.SRC)
         ; this.InitMaterialsMenu()
         ; this.InitPortalMenu()
     }
@@ -32,11 +33,6 @@ Class GameScreen
         this.RageButton := New PixelInfo(this.SRC.GetX(0.85), this.SRC.GetY(0.13), True)
 
         this.SilverButton := New PixelInfo(this.SRC.GetX(0.49), this.SRC.GetY(0.02))
-    }
-
-    InitAscensionMenu()
-    {
-        this.AscensionMenu := New AscensionMenu(this.SRC)
     }
 
     CheckRage()
