@@ -25,26 +25,6 @@ PressShift(Delay := 20)
     Send {Shift Up}
 }
 
-OpenMaterials()
-{
-    ClickAt(160, 120)
-}
-
-OpenEquipment()
-{
-    ClickAt(1140, 690)
-}
-
-Boost()
-{
-    PressShift()
-}
-
-ShootBow()
-{
-    PressSpace()
-}
-
 Jump(Delay := 20, Shots := 35)
 {
     PressSpace(Delay)
