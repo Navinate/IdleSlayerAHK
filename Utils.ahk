@@ -4,7 +4,7 @@ SendMode Input	; Recommended for new scripts due to its superior speed and relia
 SetWorkingDir %A_ScriptDir%	; Ensures a consistent starting directory.
 #SingleInstance, Force
 
-ClickAt(X, Y, Delay := 50)
+ClickAt(X, Y, Delay := 500)
 {
     MouseMove X, Y, 0
     Click
@@ -25,28 +25,28 @@ PressShift(Delay := 20)
     Send {Shift Up}
 }
 
-Jump(Delay := 20, Shots := 35)
-{
-    PressSpace(Delay)
+; Jump(Delay := 20, Shots := 35)
+; {
+;     PressSpace(Delay)
 
-    Loop %Shots%
-        ShootBow()
-}
+;     Loop %Shots%
+;         ShootBow()
+; }
 
-LowJump(Shoot := False)
-{
-    Shots := Shoot ? 35 : 0
-    Jump(20, Shots)
-}
+; LowJump(Shoot := False)
+; {
+;     Shots := Shoot ? 35 : 0
+;     Jump(20, Shots)
+; }
 
-MediumJump(Shoot := False)
-{
-    Shots := Shoot ? 40 : 0
-    Jump(90, Shots)
-}
+; MediumJump(Shoot := False)
+; {
+;     Shots := Shoot ? 40 : 0
+;     Jump(90, Shots)
+; }
 
-HighJump(Shoot := False)
-{
-    Shots := Shoot ? 43 : 0
-    Jump(165 , Shots)
-}
+; HighJump(Shoot := False)
+; {
+;     Shots := Shoot ? 43 : 0
+;     Jump(165 , Shots)
+; }

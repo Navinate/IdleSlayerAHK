@@ -6,68 +6,85 @@ SetWorkingDir %A_ScriptDir%	; Ensures a consistent starting directory.
 #Include, Utils.ahk
 #Include, PixelInfo.ahk
 
-Class AscensionMenu
+Class EquipmentMenu
 {
     _IsOpen := False
+    _IsOn := True
 
-    __New(Width, Height)
+    static Green := 0x23AA11
+    static Red := 0x1111AD
+
+    __New(SRC)
     {
-        this.InitMenuButton(Width, Height)
-        this.InitTabButtons(Width, Height)
-        this.InitAscendButton(Width, Height)
-        this.InitMinionButtons(Width, Height)
+        this.SRC := SRC
+        this.InitMenuButton()
+        this.InitTabButtons()
+        this.InitAscendButton()
+        this.InitMinionButtons()
         this.CloseMenu()
+        this._IsOn := False
     }
 
-    InitMenuButton(Width, Height)
+    InitMenuButton()
     {
-        X := Floor(Width / 20)
-        Y := Floor(Height / 10)
-        this.MenuButton := SearchAndInit(X, Y, 2*X, 2*Y, 0xA44100, "AscensionMenu Button")
+        this.MenuButton := SearchAndInit(this.SRC.GetX(0.87), this.SRC.GetY(0.78), this.SRC.GetX(0.94), this.SRC.GetY(0.91), 0x929292, "EquipmentMenu Button")
     }
 
-    InitTabButtons(Width, Height)
+    InitTabButtons()
     {
-        X := Floor(Width * 0.07)
-        Y := Floor(Height * 0.9)
+        this.OpenMenu()
 
-        DeltaX := Floor(Width * 0.09)
+        X := this.SRC.GetX(0.66)
+        Y := this.SRC.GetY(0.89)
+        DeltaX := this.SRC.GetX(0.06)
 
-        this.MainTabButton := New PixelInfo(X, Y)
-
-        X := X + DeltaX
-        this.AscensionTabButton := New PixelInfo(X, Y)
+        this.EquipmentTabButton := New PixelInfo(X, Y, True)
 
         X := X + DeltaX
-        this.MinionsTabButton := New PixelInfo(X, Y)
+        this.UpdatesTabButton := New PixelInfo(X, Y, True)
 
         X := X + DeltaX
-        this.DivinitiesTabButton := New PixelInfo(X, Y)
+        this.QuestsTabButton := New PixelInfo(X, Y, True)
+
+        X := X + DeltaX
+        this.JewelsTabButton := New PixelInfo(X, Y)
+
+        X := X + DeltaX
+        this.StatsTabButton := New PixelInfo(X, Y)
 
         X := X + DeltaX
         this.CloseButton := New PixelInfo(X, Y, True)
     }
 
-    InitAscendButton(Width, Height)
+    InitInnerButtons()
     {
-        X := Floor(Width * 0.12)
-        Y := Floor(Height * 0.77)
-        this.AscendButton := New PixelInfo(X, Y)
+        this.OpenMenu()
 
-        X := Floor(Width * 0.43)
-        this.AscendModalYesButton := New PixelInfo(X, Y)
+        Y := this.SRC.GetY(0.81)
+        this.Q1Button := New PixelInfo(this.SRC.GetX(0.76), Y)
+        this.Q10Button := New PixelInfo(this.SRC.GetX(0.81), Y)
+        this.Q50Button := New PixelInfo(this.SRC.GetX(0.86), Y)
+        this.QMaxButton := New PixelInfo(this.SRC.GetX(0.92), Y)
 
-        X := Floor(Width * 0.57)
-        this.AscendModalNoButton := New PixelInfo(X, Y)
+        X := this.SRC.GetX(0.92)
+        this.TopBuyButtons := []
+        Loop 4
+            this.TopBuyButtons.Push(New PixelInfo(X, this.SRC.GetY(0.25 + 0.13 * (A_Index - 1))))
+
+        this.BotBuyButtons := []
+        Loop 4
+            this.BotBuyButtons.Push(New PixelInfo(X, this.SRC.GetY(0.72 - 0.13 * (A_Index - 1))))
+
+        this.UpdateAllButton := this.Q10Button
+
+        this.QuestButtons := []
+        Loop 13
+            this.QuestButtons.Push(New PixelInfo(X, this.SRC.GetY(0.35 + (A_Index - 1) * 0.04)))
     }
 
-    InitMinionButtons(Width, Height)
+    Toggle()
     {
-        X := Floor(Width * 0.39)
-
-        this.TopMinionButtons := [ New PixelInfo(X, Floor(Height * 0.43), False), New PixelInfo(X, Floor(Height * 0.62), False), New PixelInfo(X, Floor(Height * 0.81), False) ]
-
-        this.BotMinionButtons := [ New PixelInfo(X, Floor(Height * 0.57), False), New PixelInfo(X, Floor(Height * 0.76), False) ]
+        this._IsOn := !this._IsOn
     }
 
     IsOpen[]
@@ -104,80 +121,140 @@ Class AscensionMenu
 
     OpenMenu(Delay := 150)
     {
-        if (!this.IsOpen)
-        {
-            this.MenuButton.Click(Delay)
-            this.IsOpen := True
-        }
+        if (!this._IsOn)
+            return
+
+        this.MenuButton.Click(Delay)
+        this.IsOpen := True
     }
 
     CloseMenu()
     {
-        if this.IsOpen
-        {
-            this.CloseButton.Click()
-            this.IsOpen := False
-        }
-    }
+        if (!this._IsOn)
+            return
 
-    OpenMainTab()
-    {
-        this.OpenMenu()
-        this.MainTabButton.Click()
-    }
-
-    OpenAscensionTab()
-    {
-        this.OpenMenu()
-        this.AscensionTabButton.Click()
-    }
-
-    OpenMinionsTab()
-    {
-        this.OpenMenu()
-        this.MinionsTabButton.Click()
-    }
-
-    OpenDivinitiesTab()
-    {
-        this.OpenMenu()
-        this.DivinitiesTabButton.Click()
-    }
-
-    Ascend()
-    {
-        this.OpenMainTab()
-        this.AscendButton.Click(200)
-        this.AscendModalYesButton.Click()
-
+        this.CloseButton.Click()
         this.IsOpen := False
     }
 
-    Minions()
+    OpenEquipmentTab()
     {
-        this.OpenMinionsTab()
+        if (!this._IsOn)
+            return
 
-        MouseMove this.AscendButton.X, this.AscendButton.Y, 0
-        Loop 7 
-            Send {WheelUp}
-        Sleep 500
+        this.OpenMenu()
+        this.EquipmentTabButton.Click()
+    }
 
-        For Index, Value in this.TopMinionButtons
-        {
-            Loop 2
-                Value.Click()
-        }
+    OpenUpdatesTab()
+    {
+        if (!this._IsOn)
+            return
 
-        Loop 7 
+        this.OpenMenu()
+        this.UpdatesTabButton.Click()
+    }
+
+    OpenQuestsTab()
+    {
+        if (!this._IsOn)
+            return
+
+        this.OpenMenu()
+        this.QuestsTabButton.Click()
+    }
+
+    OpenJewelsTab()
+    {
+        if (!this._IsOn)
+            return
+
+        this.OpenMenu()
+        this.JewelsTabButton.Click()
+    }
+
+    OpenStatsTab()
+    {
+        if (!this._IsOn)
+            return
+
+        this.OpenMenu()
+        this.StatsTabButton.Click()
+    }
+
+    BuyAll()
+    {
+        if (!this._IsOn)
+            return
+
+        this.OpenEquipmentTab()
+
+        MouseMove this.Q10Button.X, this.BotBuyButtons[2], 0
+
+        Loop 20
             Send {WheelDown}
         Sleep 500
 
-        For Index, Value in this.BotMinionButtons
+        Loop 3
         {
-            Loop 2
+            For Index, Value in this.BotBuyButtons
+            {
+                if (!this._IsOn)
+                    return
                 Value.Click()
-        }
+            }
+            Loop 8 
+                Send {WheelUp}
 
-        this.CloseMenu()
+            Sleep 300
+        }
+        For Index, Value in this.TopBuyButtons
+        {
+            if (!this._IsOn)
+                return
+            Value.Click()
+        }
+    }
+
+    UpdateAll()
+    {
+        if (!this._IsOn)
+            return
+
+        this.OpenUpdatesTab()
+
+        Loop 3
+            this.UpdateAllButton.Click()
+    }
+
+    CompleteAllQuests()
+    {
+        if (!this._IsOn)
+            return
+
+        this.OpenQuestsTab()
+
+        MouseMove this.Q10Button.X, this.BotBuyButtons[2], 0
+
+        Loop 20
+            Send {WheelUp}
+        Sleep 500
+
+        Loop 5
+        {
+            For Index, Value in this.QuestButtons
+            {
+                if (!this._IsOn)
+                    return
+                if (Value.CheckColor(EquipmentMenu.Green))
+                {
+                    Value.Click()
+                    MouseMove this.Q10Button.X, this.BotBuyButtons[2], 0
+                }
+            }
+            Loop 8 
+                Send {WheelDown}
+            Sleep 300
+        }
     }
 }

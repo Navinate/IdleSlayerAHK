@@ -33,17 +33,10 @@ F4::
 Return
 
 F6::
-    PostMessage, 0x20A, 1<<16, 0,, A
+    CoordMode, Mouse, Screen
+    MouseGetPos, vPosX, vPosY, hWnd, hCtl, 2
+    if hCtl
+        hWnd := hCtl
+    vNum := -1
+    PostMessage, 0x20A, % vNum<<16, % vPosX|(vPosY<<16),, % "ahk_id " hWnd
 Return
-
-F7:: ; Scroll right.
-F8:: ; Scroll left.
-    (A_ThisHotkey!=A_PriorHotkey||A_TimeSincePriorHotkey>450)? rNotch:=1: (rNotch<20)? rNotch++: rNotch+=3
-    ControlGetFocus, fcontrol, A
-    if (A_ThisHotkey = "F8")
-        Loop % rNotch ; <-- Increase this value to scroll faster.
-        SendMessage, 0x115, 0, 0, %fcontrol%, A ; 0x114 is WM_HSCROLL and the 0 after it is SB_LINELEFT.
-    if (A_ThisHotkey = "F7")
-        Loop % rNotch ; <-- Increase this value to scroll faster.			
-        SendMessage, 0x115, 1, 0, %fcontrol%, A ; 0x114 is WM_HSCROLL and t	he 0 after it is SB_LINELEFT.
-return

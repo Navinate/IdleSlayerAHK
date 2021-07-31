@@ -19,11 +19,12 @@ Class PixelInfo
         this.ColorID := ColorID
     }
 
-    CheckColor()
+    CheckColor(ColorID := "")
     {
         PixelGetColor, TempColorID, this.X, this.Y
-        CID := this.ColorID
-        If (TempColorID == this.ColorID)
+        if (!ColorID)
+            ColorID := this.ColorID
+        If (TempColorID == ColorID)
             Return True
         Return False
     }

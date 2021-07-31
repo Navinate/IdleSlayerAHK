@@ -3,6 +3,7 @@
 SendMode Input	; Recommended for new scripts due to its superior speed and reliability.
 SetWorkingDir %A_ScriptDir%	; Ensures a consistent starting directory.
 #SingleInstance, Force
+#Include, ScreenResolution.ahk
 #Include, Utils.ahk
 #Include, PixelInfo.ahk
 #Include, AscensionMenu.ahk
@@ -15,45 +16,37 @@ Class GameScreen
     __New()
     {
         WinGetPos, , , Width, Height, Idle Slayer
+        this.SRC := New ScreenResolutionController(this.ResolutionX, this.ResolutionY, Width, Height)
 
-        RealHeight := Floor(Width / this.ResolutionX * this.ResolutionY)
-        PadHeight := Height - RealHeight
-
-        this.InitBasicButtons(Width, Height)
-        this.InitAscensionMenu(Width, Height)
+        this.InitBasicButtons()
+        this.InitAscensionMenu()
         ; this.InitEquipmentMenu()
         ; this.InitMaterialsMenu()
         ; this.InitPortalMenu()
     }
 
-    InitBasicButtons(Width, Height)
+    InitBasicButtons()
     {
-        X := Floor(Width * 0.09)
-        Y := Floor(Height * 0.8)
-        this.BoostButton := New PixelInfo(X, Y, True)
+        this.BoostButton := New PixelInfo(this.SRC.GetX(0.09), this.SRC.GetY(0.79), True)
 
-        X := Floor(Width * 0.85)
-        Y := Floor(Height * 0.18)
-        this.RageButton := New PixelInfo(X, Y, True)
+        this.RageButton := New PixelInfo(this.SRC.GetX(0.85), this.SRC.GetY(0.13), True)
 
-        X := Floor(Width * 0.49)
-        Y := Floor(Height * 0.08)
-        this.SilverButton := New PixelInfo(X, Y)
+        this.SilverButton := New PixelInfo(this.SRC.GetX(0.49), this.SRC.GetY(0.02))
     }
 
-    InitAscensionMenu(Width, Height)
+    InitAscensionMenu()
     {
-        this.AscensionMenu := New AscensionMenu(Width, Height)
+        this.AscensionMenu := New AscensionMenu(this.SRC)
     }
 
     CheckRage()
     {
         if (this.RageButton.CheckColor())
         {
-            X1 := Floor(Width * 0.84)
-            Y1 := Floor(Height * 0.17)
-            X2 := Floor(Width * 0.86)
-            Y2 := Floor(Height * 0.19)
+            X1 := this.SRC.GetX(0.84)
+            Y1 := this.SRC.GetY(0.17)
+            X2 := this.SRC.GetX(0.86)
+            Y2 := this.SRC.GetY(0.19)
 
             PixelSearch PX, PY, X1, Y1, X2, Y2, 0x02012E, 10, Fast
             if ErrorLevel
@@ -66,10 +59,10 @@ Class GameScreen
     {
         if (this.BoostButton.CheckColor())
         {
-            X1 := Floor(Width * 0.08)
-            Y1 := Floor(Height * 0.79)
-            X2 := Floor(Width * 0.1)
-            Y2 := Floor(Height * 0.81)
+            X1 := this.SRC.GetX(0.08)
+            Y1 := this.SRC.GetY(0.79)
+            X2 := this.SRC.GetX(0.1)
+            Y2 := this.SRC.GetY(0.81)
 
             PixelSearch PX, PY, X1, Y1, X2, Y2, 0x301604, 10, Fast
             if ErrorLevel
@@ -83,6 +76,13 @@ Class GameScreen
 #IfWinActive, Idle Slayer
     I::
         Game := New GameScreen()
+        MsgBox Initialized
+    Return
+
+    M::
+        Game.AscensionMenu._IsOn := True
+        Game.AscensionMenu.Minions()
+        Game.AscensionMenu.CloseMenu()
     Return
 
     R::
