@@ -14,6 +14,7 @@ Return
 
 F3::
     MouseGetPos, MouseX, MouseY
-    PixelGetColor, Color, (MouseX + 50), MouseY
-    MsgBox %MouseX% %MouseY% - %Color%
+    PixelGetColor, Color, (MouseX), MouseY
+    PixelGetColor, Color2, (MouseX + 50), MouseY
+    MsgBox %MouseX% %MouseY% - %Color%, %Color2%
 Return

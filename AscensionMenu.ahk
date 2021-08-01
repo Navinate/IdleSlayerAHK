@@ -9,7 +9,14 @@ SetWorkingDir %A_ScriptDir%	; Ensures a consistent starting directory.
 Class AscensionMenu
 {
     _IsOpen := False
-    _IsOn := True
+    IsOn := False
+
+    static MenuButtonColors := [0xA44100, 0xAB4400]
+    static TabButtonColors := [0x243388, 0x25358E]
+    static CloseButtonColor := 0x1111AD
+    ; static OnMissionColor := 0xCF5F9B
+    ; static CompleteMissionColor := 0x23AA11
+    ; static StartMissionColor := 0x8B1856
 
     __New(SRC)
     {
@@ -18,21 +25,18 @@ Class AscensionMenu
         this.InitTabButtons()
         this.InitAscendButton()
         this.InitMinionButtons()
-        this.CloseMenu()
-        this._IsOn := False
     }
 
     InitMenuButton()
     {
-        this.MenuButton := SearchAndInit(this.SRC.GetX(0.05), this.SRC.GetY(0.05), this.SRC.GetX(0.1), this.SRC.GetY(0.15), 0xA44100, "AscensionMenu Button")
+        this.MenuButton := New PixelInfo(this.SRC.GetX(0.0555), this.SRC.GetY(0.1167)) ; 82, 129
     }
 
     InitTabButtons()
     {
-        this.OpenMenu()
-        X := this.SRC.GetX(0.07)
-        Y := this.SRC.GetY(0.89)
-        DeltaX := this.SRC.GetX(0.09)
+        X := this.SRC.GetX(0.0969) ; 135
+        Y := this.SRC.GetY(0.9098) ; 700
+        DeltaX := this.SRC.GetDX(0.0938) ; 120
 
         this.MainTabButton := New PixelInfo(X, Y)
 
@@ -46,43 +50,41 @@ Class AscensionMenu
         this.DivinitiesTabButton := New PixelInfo(X, Y)
 
         X := X + DeltaX
-        this.CloseButton := New PixelInfo(X, Y, True)
+        this.CloseButton := New PixelInfo(X, Y)
     }
 
     InitAscendButton()
     {
-        Y := this.SRC.GetY(0.77)
-        this.AscendButton := New PixelInfo(this.SRC.GetX(0.12), Y)
+        Y := this.SRC.GetY(0.7778) ; 605
+        this.AscendButton := New PixelInfo(this.SRC.GetX(0.0891), Y) ; 125
 
-        this.AscendModalYesButton := New PixelInfo(this.SRC.GetX(0.43), Y)
+        this.AscendModalYesButton := New PixelInfo(this.SRC.GetX(0.4368), Y) ; 570
 
-        this.AscendModalNoButton := New PixelInfo(this.SRC.GetX(0.57), Y)
+        this.AscendModalNoButton := New PixelInfo(this.SRC.GetX(0.5696), Y) ; 740
     }
 
     InitMinionButtons()
     {
-        X := this.SRC.GetX(0.39)
+        this.TopScrollButton := New PixelInfo(this.SRC.GetX(0.4719), this.SRC.GetY(0.3125), True, 0xD6D6D6) ; 615, 270
+        this.BotScrollButton := New PixelInfo(this.SRC.GetX(0.4719), this.SRC.GetY(0.8403), True, 0xD6D6D6) ; 615, 650
 
-        this.TopMinionButtons := [ New PixelInfo(X, this.SRC.GetY(0.43)), New PixelInfo(X, this.SRC.GetY(0.62)), New PixelInfo(X, this.SRC.GetY(0.81)) ]
+        X := this.SRC.GetX(0.4368) ; 570
 
-        this.BotMinionButtons := [ New PixelInfo(X, this.SRC.GetY(0.57)), New PixelInfo(X, this.SRC.GetY(0.76)) ]
-    }
+        this.TopMinionButtons := [ New PixelInfo(X, this.SRC.GetY(0.3542)), New PixelInfo(X, this.SRC.GetY(0.5625)), New PixelInfo(X, this.SRC.GetY(0.7709)) ] ; 300, 450, 600
 
-    Toggle()
-    {
-        this._IsOn := !this._IsOn
+        this.BotMinionButtons := [ New PixelInfo(X, this.SRC.GetY(0.5139)), New PixelInfo(X, this.SRC.GetY(0.7223)) ] ; 415, 565
     }
 
     IsOpen[]
     {
         get
         {
-            if (this.MenuButton.CheckColor())
+            if (this.MenuButton.CheckColors(AscensionMenu.MenuButtonColors))
             {
                 this._IsOpen := False
                 return False
             }
-            if (!this.CloseButton.CheckColor())
+            if (!this.CloseButton.CheckColor(AscensionMenu.CloseButtonColor))
             {
                 this._IsOpen := False
                 return False
@@ -107,7 +109,7 @@ Class AscensionMenu
 
     OpenMenu(Delay := 150)
     {
-        if (!this.IsOpen and this._IsOn)
+        if (!this.IsOpen and this.IsOn)
         {
             this.MenuButton.Click(Delay)
             this.IsOpen := True
@@ -116,7 +118,7 @@ Class AscensionMenu
 
     CloseMenu()
     {
-        if (this.IsOpen and this._IsOn)
+        if (this.IsOpen and this.IsOn)
         {
             this.CloseButton.Click()
             this.IsOpen := False
@@ -125,7 +127,7 @@ Class AscensionMenu
 
     OpenMainTab()
     {
-        if (!this._IsOn)
+        if (!this.IsOn)
             return
 
         this.OpenMenu()
@@ -134,7 +136,7 @@ Class AscensionMenu
 
     OpenAscensionTab()
     {
-        if (!this._IsOn)
+        if (!this.IsOn)
             return
 
         this.OpenMenu()
@@ -143,7 +145,7 @@ Class AscensionMenu
 
     OpenMinionsTab()
     {
-        if (!this._IsOn)
+        if (!this.IsOn)
             return
 
         this.OpenMenu()
@@ -152,7 +154,7 @@ Class AscensionMenu
 
     OpenDivinitiesTab()
     {
-        if (!this._IsOn)
+        if (!this.IsOn)
             return
 
         this.OpenMenu()
@@ -161,7 +163,7 @@ Class AscensionMenu
 
     Ascend()
     {
-        if (!this._IsOn)
+        if (!this.IsOn)
             return
 
         this.OpenMainTab()
@@ -173,32 +175,27 @@ Class AscensionMenu
 
     Minions()
     {
-        if (!this._IsOn)
+        if (!this.IsOn)
             return
 
         this.OpenMinionsTab()
 
-        MouseMove this.AscendButton.X, this.AscendButton.Y, 0
-        Loop 7 
-            Send {WheelUp}
-        Sleep 500
+        this.TopScrollButton.Click()
 
         For Index, Value in this.TopMinionButtons
         {
-            if (!this._IsOn)
+            if (!this.IsOn)
                 return
 
             Loop 2
                 Value.Click()
         }
 
-        Loop 7 
-            Send {WheelDown}
-        Sleep 500
+        this.BotScrollButton.Click()
 
         For Index, Value in this.BotMinionButtons
         {
-            if (!this._IsOn)
+            if (!this.IsOn)
                 return
 
             Loop 2

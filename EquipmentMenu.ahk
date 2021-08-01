@@ -9,10 +9,12 @@ SetWorkingDir %A_ScriptDir%	; Ensures a consistent starting directory.
 Class EquipmentMenu
 {
     _IsOpen := False
-    _IsOn := True
+    IsOn := False
 
-    static Green := 0x23AA11
-    static Red := 0x1111AD
+    static MenuButtonColors := [0x929292, 0x989898]
+    static TabButtonColors := [0x243388, 0x25368E]
+    static CloseButtonColor := 0x1010A6
+    static GreenColors := [0x23AA11, 0x22A310]
 
     __New(SRC)
     {
@@ -21,30 +23,26 @@ Class EquipmentMenu
         this.InitTabButtons()
         this.InitAscendButton()
         this.InitMinionButtons()
-        this.CloseMenu()
-        this._IsOn := False
     }
 
     InitMenuButton()
     {
-        this.MenuButton := SearchAndInit(this.SRC.GetX(0.87), this.SRC.GetY(0.78), this.SRC.GetX(0.94), this.SRC.GetY(0.91), 0x929292, "EquipmentMenu Button")
+        this.MenuButton := New PixelInfo(this.SRC.GetX(0.8821), this.SRC.GetY(0.8195)) ; 1140, 635
     }
 
     InitTabButtons()
     {
-        this.OpenMenu()
+        X := this.SRC.GetX(0.6868) ; 890
+        Y := this.SRC.GetY(0.875) ; 675
+        DeltaX := this.SRC.GetX(0.0579) ; 74
 
-        X := this.SRC.GetX(0.66)
-        Y := this.SRC.GetY(0.89)
-        DeltaX := this.SRC.GetX(0.06)
-
-        this.EquipmentTabButton := New PixelInfo(X, Y, True)
+        this.EquipmentTabButton := New PixelInfo(X, Y)
 
         X := X + DeltaX
-        this.UpdatesTabButton := New PixelInfo(X, Y, True)
+        this.UpdatesTabButton := New PixelInfo(X, Y)
 
         X := X + DeltaX
-        this.QuestsTabButton := New PixelInfo(X, Y, True)
+        this.QuestsTabButton := New PixelInfo(X, Y)
 
         X := X + DeltaX
         this.JewelsTabButton := New PixelInfo(X, Y)
@@ -53,50 +51,55 @@ Class EquipmentMenu
         this.StatsTabButton := New PixelInfo(X, Y)
 
         X := X + DeltaX
-        this.CloseButton := New PixelInfo(X, Y, True)
+        this.CloseButton := New PixelInfo(X, Y)
     }
 
     InitInnerButtons()
     {
-        this.OpenMenu()
+        this.TopScrollBuyButton := New PixelInfo(this.SRC.GetX(0.9735), this.SRC.GetY(0.207)) ; 1257, 194
+        this.BotScrollBuyButton := New PixelInfo(this.SRC.GetX(0.9735), this.SRC.GetY(0.7764)) ; 1257, 604
 
-        Y := this.SRC.GetY(0.81)
-        this.Q1Button := New PixelInfo(this.SRC.GetX(0.76), Y)
-        this.Q10Button := New PixelInfo(this.SRC.GetX(0.81), Y)
-        this.Q50Button := New PixelInfo(this.SRC.GetX(0.86), Y)
-        this.QMaxButton := New PixelInfo(this.SRC.GetX(0.92), Y)
+        this.TopScrollQuestButton := New PixelInfo(this.SRC.GetX(0.9735), this.SRC.GetY(0.3375)) ; 1257, 288
+        this.BotScrollQuestButton := New PixelInfo(this.SRC.GetX(0.9735), this.SRC.GetY(0.8417)) ; 1257, 651
 
-        X := this.SRC.GetX(0.92)
+        Y := this.SRC.GetY(0.8264) ; 640
+        this.Q1Button := New PixelInfo(this.SRC.GetX(0.7649), Y) ; 990
+        this.Q10Button := New PixelInfo(this.SRC.GetX(0.8157), Y) ; 1055
+        this.Q50Button := New PixelInfo(this.SRC.GetX(0.8665), Y) ; 1120
+        this.QMaxButton := New PixelInfo(this.SRC.GetX(0.9172), Y) ; 1185
+
+        X := this.SRC.GetX(0.9563) ; 1235
         this.TopBuyButtons := []
+        StartY := this.SRC.GetY(0.2431) ; 220
+        DeltaY := this.SRC.GetDY(0.1389) ; 100
         Loop 4
-            this.TopBuyButtons.Push(New PixelInfo(X, this.SRC.GetY(0.25 + 0.13 * (A_Index - 1))))
+            this.TopBuyButtons.Push(New PixelInfo(X, StartY + DeltaY * (A_Index - 1)))
 
         this.BotBuyButtons := []
+
+        StartY := this.SRC.GetY(0.7153) ; 560
         Loop 4
-            this.BotBuyButtons.Push(New PixelInfo(X, this.SRC.GetY(0.72 - 0.13 * (A_Index - 1))))
+            this.BotBuyButtons.Push(New PixelInfo(X, StartY - DeltaY * (A_Index - 1)))
 
         this.UpdateAllButton := this.Q10Button
 
         this.QuestButtons := []
-        Loop 13
-            this.QuestButtons.Push(New PixelInfo(X, this.SRC.GetY(0.35 + (A_Index - 1) * 0.04)))
-    }
-
-    Toggle()
-    {
-        this._IsOn := !this._IsOn
+        StartY := this.SRC.GetY(0.3542) ; 300
+        DeltaY := this.SRC.GetDY(0.0459) ; 33
+        Loop 10
+            this.QuestButtons.Push(New PixelInfo(X, StartY - DeltaY * (A_Index - 1)))
     }
 
     IsOpen[]
     {
         get
         {
-            if (this.MenuButton.CheckColor())
+            if (this.MenuButton.CheckColors(EquipmentMenu.MenuButtonColors))
             {
                 this._IsOpen := False
                 return False
             }
-            if (!this.CloseButton.CheckColor())
+            if (!this.CloseButton.CheckColor(EquipmentMenu.CloseButtonColor))
             {
                 this._IsOpen := False
                 return False
@@ -121,7 +124,7 @@ Class EquipmentMenu
 
     OpenMenu(Delay := 150)
     {
-        if (!this._IsOn)
+        if (!this.IsOn)
             return
 
         this.MenuButton.Click(Delay)
@@ -130,7 +133,7 @@ Class EquipmentMenu
 
     CloseMenu()
     {
-        if (!this._IsOn)
+        if (!this.IsOn)
             return
 
         this.CloseButton.Click()
@@ -139,7 +142,7 @@ Class EquipmentMenu
 
     OpenEquipmentTab()
     {
-        if (!this._IsOn)
+        if (!this.IsOn)
             return
 
         this.OpenMenu()
@@ -148,7 +151,7 @@ Class EquipmentMenu
 
     OpenUpdatesTab()
     {
-        if (!this._IsOn)
+        if (!this.IsOn)
             return
 
         this.OpenMenu()
@@ -157,7 +160,7 @@ Class EquipmentMenu
 
     OpenQuestsTab()
     {
-        if (!this._IsOn)
+        if (!this.IsOn)
             return
 
         this.OpenMenu()
@@ -166,7 +169,7 @@ Class EquipmentMenu
 
     OpenJewelsTab()
     {
-        if (!this._IsOn)
+        if (!this.IsOn)
             return
 
         this.OpenMenu()
@@ -175,7 +178,7 @@ Class EquipmentMenu
 
     OpenStatsTab()
     {
-        if (!this._IsOn)
+        if (!this.IsOn)
             return
 
         this.OpenMenu()
@@ -184,33 +187,28 @@ Class EquipmentMenu
 
     BuyAll()
     {
-        if (!this._IsOn)
+        if (!this.IsOn)
             return
 
         this.OpenEquipmentTab()
-
-        MouseMove this.Q10Button.X, this.BotBuyButtons[2], 0
-
-        Loop 20
-            Send {WheelDown}
-        Sleep 500
+        this.BotScrollBuyButton.Click()
 
         Loop 3
         {
             For Index, Value in this.BotBuyButtons
             {
-                if (!this._IsOn)
+                if (!this.IsOn)
                     return
                 Value.Click()
             }
+
             Loop 8 
                 Send {WheelUp}
-
             Sleep 300
         }
         For Index, Value in this.TopBuyButtons
         {
-            if (!this._IsOn)
+            if (!this.IsOn)
                 return
             Value.Click()
         }
@@ -218,7 +216,7 @@ Class EquipmentMenu
 
     UpdateAll()
     {
-        if (!this._IsOn)
+        if (!this.IsOn)
             return
 
         this.OpenUpdatesTab()
@@ -229,28 +227,20 @@ Class EquipmentMenu
 
     CompleteAllQuests()
     {
-        if (!this._IsOn)
+        if (!this.IsOn)
             return
 
         this.OpenQuestsTab()
-
-        MouseMove this.Q10Button.X, this.BotBuyButtons[2], 0
-
-        Loop 20
-            Send {WheelUp}
-        Sleep 500
+        this.TopScrollQuestButton.Click()
 
         Loop 5
         {
-            For Index, Value in this.QuestButtons
+            For Index, QButton in this.QuestButtons
             {
-                if (!this._IsOn)
+                if (!this.IsOn)
                     return
-                if (Value.CheckColor(EquipmentMenu.Green))
-                {
-                    Value.Click()
-                    MouseMove this.Q10Button.X, this.BotBuyButtons[2], 0
-                }
+                if (QButton.CheckColors(EquipmentMenu.GreenColors))
+                    QButton.Click()
             }
             Loop 8 
                 Send {WheelDown}

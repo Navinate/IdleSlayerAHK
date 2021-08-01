@@ -9,9 +9,10 @@ Class PixelInfo
     Y := 0
     ColorID := 0x000000
 
-    __New(X, Y, InitColor := False, ColorID := "")
+    __New(X, Y, InitColor := False)
     {
-        if (InitColor and !ColorID)
+        ColorID := ""
+        if (InitColor)
             PixelGetColor, ColorID, X, Y
 
         this.X := X
@@ -21,12 +22,27 @@ Class PixelInfo
 
     CheckColor(ColorID := "")
     {
-        PixelGetColor, TempColorID, this.X, this.Y
         if (!ColorID)
             ColorID := this.ColorID
-        If (TempColorID == ColorID)
+        If (this.GetColor() == ColorID)
             Return True
         Return False
+    }
+
+    CheckColors(ColorIDs)
+    {
+        for Index, Value in ColorIDs
+        {
+            if (this.CheckColor(Value))
+                return True
+        }
+        return False
+    }
+
+    GetColor()
+    {
+        PixelGetColor, TempColorID, this.X, this.Y
+        Return TempColorID
     }
 
     Click(Delay := 50)

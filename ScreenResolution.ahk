@@ -8,19 +8,29 @@ Class ScreenResolutionController
 {
     __New(X, Y, Width, Height)
     {
-        this.Width := Width
-        this.RealHeight := Floor(Width / X * Y)
-        this.PadHeight := (Height - this.RealHeight)
+        this.X := X
+        this.Y := Y
+        this.PadX := Floor(Round((Width - X) / 2))
+        this.PadY := Floor(Round(Height - Y - this.PadX))
     }
 
-    GetX(Proportion)
+    GetX(Proportion, NoPad := False)
     {
-        Return Floor(this.Width * Proportion)
+        Return Floor(Round(this.X * Proportion + (NoPad ? 0 : this.PadX), 10))
     }
 
-    GetY(Proportion)
+    GetDX(Proportion)
     {
-        Return Floor(this.RealHeight * Proportion + this.PadHeight)
+        Return this.GetX(Proportion, True)
     }
 
+    GetY(Proportion, NoPad := False)
+    {
+        Return Floor(Round(this.Y * Proportion + (NoPad ? 0 : this.PadY), 10))
+    }
+
+    GetDY(Proportion)
+    {
+        Return this.GetY(Proportion, True)
+    }
 }

@@ -8,6 +8,8 @@ SetWorkingDir %A_ScriptDir%	; Ensures a consistent starting directory.
 #Include, ScreenResolution.ahk
 #Include, AscensionMenu.ahk
 #Include, EquipmentMenu.ahk
+#Include, ChestHunt.ahk
+#Include, BonusLevel.ahk
 
 Class GameScreen
 {
@@ -22,6 +24,8 @@ Class GameScreen
         this.InitBasicButtons()
         this.AscensionMenu := New AscensionMenu(this.SRC)
         this.EquipmentMenu := New EquipmentMenu(this.SRC)
+        this.ChestHunt := New ChestHunt(this.SRC)
+        this.BonusLevel := New BonusLevel(this.SRC)
         ; this.InitMaterialsMenu()
         ; this.InitPortalMenu()
     }
@@ -75,8 +79,12 @@ Class GameScreen
         MsgBox Initialized
     Return
 
+    A::
+        v1:=Game.AscensionMenu.CloseButton.GetColor()
+        v2:=Game.AscensionMenu.IsOpen
+        MsgBox %v1% %v2%
+    Return
     M::
-        Game.AscensionMenu._IsOn := True
         Game.AscensionMenu.Minions()
         Game.AscensionMenu.CloseMenu()
     Return
@@ -90,6 +98,31 @@ Class GameScreen
                 Break
             }
         }
+    Return
+
+    T::
+        Toggle := !Toggle
+    Return
+
+    H::
+        Toggle := False
+        Game.ChestHunt._IsOpen := True
+        Loop
+        {
+            if (Game.ChestHunt.CanClose or Toggle)
+            {
+                Game.ChestHunt.Close()
+                Break
+            }
+            Game.ChestHunt.ClickClosedChests()
+        }
+    Return
+
+    F3::
+        MouseGetPos, MouseX, MouseY
+        PixelGetColor, Color, (MouseX), MouseY
+        PixelGetColor, Color2, (MouseX + 50), MouseY
+        MsgBox %MouseX% %MouseY% - %Color%, %Color2%
     Return
 
 #IfWinActive

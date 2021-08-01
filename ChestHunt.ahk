@@ -8,26 +8,78 @@ SetWorkingDir %A_ScriptDir%	; Ensures a consistent starting directory.
 
 Class ChestHunt
 {
-    _IsOn := True
+    _IsOpen := False
+    IsOn := False
     static Red := 0x0000AD
+    static StartBackgroundColors := [0x111B21, 0x111C22]
 
     __New(SRC)
     {
         this.SRC := SRC
-        this.InitChests()
-        this.InitButton()
-    }
 
-    InitButton()
-    {
-        this.CloseButton := New PixelInfo( this.SRC.GetX(0.38), this.SRC.GetY(0.9))
+        this.Chests := []
+        StartX := this.SRC.GetX(0.1649) ; 222
+        DeltaX := this.SRC.GetDX(0.0743) ; 95
+        Y := this.SRC.GetY(0.3848) ; 322
+        DeltaY := this.SRC.GetDY(0.1389) ; 100
+        Loop 3
+        {
+            X := StartX
+            Loop 10
+            {
+                this.Chests.Push(New PixelInfo(X, Y, True, 0x31BBFF))
+                X := X + DeltaX
+            }
+            Y := Y + DeltaY
+        }
+
+        this.CloseButton := New PixelInfo(this.SRC.GetX(0.3782), this.SRC.GetY(0.9098)) ; 495, 700
     }
 
     IsOpen[]
     {
         get
         {
+            if (this.CloseButton.CheckColors(ChestHunt.StartBackgroundColors))
+            {
+                this._IsOpen := True
+                return True
+            }
+            return this._IsOpen
+        }
+    }
 
+    CanClose[]
+    {
+        get
+        {
+            if (this.CloseButton.CheckColor(ChestHunt.Red))
+                return True
+
+            return False
+        }
+    }
+
+    ClickClosedChests()
+    {
+        For Index, ChestInfo in this.Chests
+        {
+            if (!this.IsOn)
+            {
+                this._IsOpen := False
+                Break
+            }
+            if (ChestInfo.CheckColor())
+                ChestInfo.Click(200)
+        }
+    }
+
+    Close()
+    {
+        if (this.CanClose and this.IsOn)
+        {
+            this.CloseButton.Click()
+            this.IsOn := False
         }
     }
 }
