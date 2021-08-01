@@ -10,8 +10,9 @@ Class ChestHunt
 {
     _IsOpen := False
     IsOn := False
-    static Red := 0x0000AD
+    static RedColor := 0x0000AD
     static StartBackgroundColors := [0x111B21, 0x111C22]
+    static ChestKeyHoleColor := 0x31BBFF
 
     __New(SRC)
     {
@@ -27,7 +28,7 @@ Class ChestHunt
             X := StartX
             Loop 10
             {
-                this.Chests.Push(New PixelInfo(X, Y, True, 0x31BBFF))
+                this.Chests.Push(New PixelInfo(X, Y))
                 X := X + DeltaX
             }
             Y := Y + DeltaY
@@ -53,7 +54,7 @@ Class ChestHunt
     {
         get
         {
-            if (this.CloseButton.CheckColor(ChestHunt.Red))
+            if (this.CloseButton.CheckColor(ChestHunt.RedColor))
                 return True
 
             return False
@@ -61,7 +62,7 @@ Class ChestHunt
     }
 
     ClickClosedChests()
-    {
+    { 
         For Index, ChestInfo in this.Chests
         {
             if (!this.IsOn)
@@ -69,7 +70,7 @@ Class ChestHunt
                 this._IsOpen := False
                 Break
             }
-            if (ChestInfo.CheckColor())
+            if (ChestInfo.CheckColor(ChestHunt.ChestKeyHoleColor))
                 ChestInfo.Click(200)
         }
     }
@@ -79,7 +80,19 @@ Class ChestHunt
         if (this.CanClose and this.IsOn)
         {
             this.CloseButton.Click()
-            this.IsOn := False
+            this._IsOpen := False
+        }
+    }
+
+    Complete()
+    {
+        Loop
+        {
+            if (!this.IsOn or !this.IsOpen)
+                Return
+
+            this.ClickClosedChests()
+            this.Close()
         }
     }
 }

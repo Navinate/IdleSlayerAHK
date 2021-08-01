@@ -21,8 +21,7 @@ Class EquipmentMenu
         this.SRC := SRC
         this.InitMenuButton()
         this.InitTabButtons()
-        this.InitAscendButton()
-        this.InitMinionButtons()
+        this.InitInnerButtons()
     }
 
     InitMenuButton()
@@ -34,7 +33,7 @@ Class EquipmentMenu
     {
         X := this.SRC.GetX(0.6868) ; 890
         Y := this.SRC.GetY(0.875) ; 675
-        DeltaX := this.SRC.GetX(0.0579) ; 74
+        DeltaX := this.SRC.GetDX(0.0579) ; 74
 
         this.EquipmentTabButton := New PixelInfo(X, Y)
 
@@ -87,7 +86,7 @@ Class EquipmentMenu
         StartY := this.SRC.GetY(0.3542) ; 300
         DeltaY := this.SRC.GetDY(0.0459) ; 33
         Loop 10
-            this.QuestButtons.Push(New PixelInfo(X, StartY - DeltaY * (A_Index - 1)))
+            this.QuestButtons.Push(New PixelInfo(X, StartY + DeltaY * (A_Index - 1)))
     }
 
     IsOpen[]
@@ -116,7 +115,7 @@ Class EquipmentMenu
     {
         get
         {
-            if (this.MenuButton.CheckColor() or this.IsOpen)
+            if (this.MenuButton.CheckColors(EquipmentMenu.MenuButtonColors) or this.IsOpen)
                 return False
             return True
         }
@@ -124,7 +123,7 @@ Class EquipmentMenu
 
     OpenMenu(Delay := 150)
     {
-        if (!this.IsOn)
+        if (!this.IsOn or this.IsOpen)
             return
 
         this.MenuButton.Click(Delay)
@@ -191,7 +190,9 @@ Class EquipmentMenu
             return
 
         this.OpenEquipmentTab()
+        Sleep 500
         this.BotScrollBuyButton.Click()
+        Sleep 500
 
         Loop 3
         {
@@ -214,7 +215,18 @@ Class EquipmentMenu
         }
     }
 
-    UpdateAll()
+    BuyLast()
+    {
+        if (!this.IsOn)
+            return
+
+        this.OpenEquipmentTab()
+
+        this.BotScrollBuyButton.Click()
+        this.BotBuyButtons[1].Click()
+    }
+
+    UpgradeAll()
     {
         if (!this.IsOn)
             return
@@ -246,5 +258,17 @@ Class EquipmentMenu
                 Send {WheelDown}
             Sleep 300
         }
+    }
+
+    CheckQuestUpdates()
+    {
+        if (!this.IsOn or !this.IsUpdated)
+            return False
+
+        this.OpenMenu()
+
+        If (this.QuestsTabButton.CheckColors(EquipmentMenu.TabButtonColors))
+            return False
+        return True
     }
 }

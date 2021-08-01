@@ -18,3 +18,48 @@ F3::
     PixelGetColor, Color2, (MouseX + 50), MouseY
     MsgBox %MouseX% %MouseY% - %Color%, %Color2%
 Return
+
+F4::
+    Bot := New AutoBot()
+    EM := Bot.Game.EquipmentMenu
+
+    EM.Q1Button.MouseMove()
+    Sleep 500
+
+    EM.Q10Button.MouseMove()
+    Sleep 500
+
+    EM.Q50Button.MouseMove()
+    Sleep 500
+
+    EM.QMaxButton.MouseMove()
+    Sleep 500
+
+    EM.EquipmentTabButton.MouseMove()
+    Sleep 500
+
+    EM.Q1Button.MouseMove()
+    Sleep 500
+
+    EM.Q1Button.MouseMove()
+    Sleep 500
+
+    EM.Q1Button.MouseMove()
+    Sleep 500
+
+    EM.Q1Button.MouseMove()
+    Sleep 500
+
+    EM.Q1Button.MouseMove()
+    Sleep 500
+
+    EM.Q1Button.MouseMove()
+    Sleep 500
+
+    EM.Q1Button.MouseMove()
+    Sleep 500
+
+    EM.Q1Button.MouseMove()
+    Sleep 500
+
+Return

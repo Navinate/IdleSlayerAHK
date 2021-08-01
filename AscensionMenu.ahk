@@ -14,9 +14,10 @@ Class AscensionMenu
     static MenuButtonColors := [0xA44100, 0xAB4400]
     static TabButtonColors := [0x243388, 0x25358E]
     static CloseButtonColor := 0x1111AD
-    ; static OnMissionColor := 0xCF5F9B
-    ; static CompleteMissionColor := 0x23AA11
-    ; static StartMissionColor := 0x8B1856
+    static OnMissionColor := 0xCF5F9B
+    static CompleteMissionColors := [0x23AA11, 0x22A310]
+    static StartMissionColors := [0x8B1856, 0x861753]
+    static GreenColor := 0x00A100
 
     __New(SRC)
     {
@@ -58,9 +59,9 @@ Class AscensionMenu
         Y := this.SRC.GetY(0.7778) ; 605
         this.AscendButton := New PixelInfo(this.SRC.GetX(0.0891), Y) ; 125
 
-        this.AscendModalYesButton := New PixelInfo(this.SRC.GetX(0.4368), Y) ; 570
+        this.AscendModalYesButton := New PixelInfo(this.SRC.GetX(0.4758), Y) ; 620
 
-        this.AscendModalNoButton := New PixelInfo(this.SRC.GetX(0.5696), Y) ; 740
+        this.AscendModalNoButton := New PixelInfo(this.SRC.GetX(0.6086), Y) ; 790
     }
 
     InitMinionButtons()
@@ -101,7 +102,7 @@ Class AscensionMenu
     {
         get
         {
-            if (this.MenuButton.CheckColor() or this.IsOpen)
+            if (this.MenuButton.CheckColors(AscensionMenu.MenuButtonColors) or this.IsOpen)
                 return False
             return True
         }
@@ -168,9 +169,15 @@ Class AscensionMenu
 
         this.OpenMainTab()
         this.AscendButton.Click(200)
+
+        Success := False
+        If (this.AscendModalYesButton.CheckColor(AscensionMenu.GreenColor))
+            Success := True
+
         this.AscendModalYesButton.Click()
 
-        this.IsOpen := False
+        If (Success)
+            this.IsOpen := False
     }
 
     Minions()

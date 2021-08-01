@@ -15,6 +15,14 @@ Class GameScreen
 {
     ResolutionX := 1280
     ResolutionY := 720
+    _IsOn := False
+    _IsMouseOn := True
+
+    static BoostColors := [0x943F06, 0x9A4106]
+    static BoostActiveColors := [0x301604, 0x321704]
+    static RageColors := [0x060393, 0x060399]
+    static RageActiveColors := [0x020130, 0x02012E]
+    static SilverColors := [0x00A2D8]
 
     __New()
     {
@@ -32,97 +40,108 @@ Class GameScreen
 
     InitBasicButtons()
     {
-        this.BoostButton := New PixelInfo(this.SRC.GetX(0.09), this.SRC.GetY(0.79), True)
+        this.BoostButton := New PixelInfo(this.SRC.GetX(0.0883), this.SRC.GetY(0.8042)) ; 124, 624
+        this.RageButton := New PixelInfo(this.SRC.GetX(0.8547), this.SRC.GetY(0.1223)) ; 1105, 133
+        this.SilverButton := New PixelInfo(this.SRC.GetX(0.5204), this.SRC.GetY(0.025)) ; 677, 63
+    }
 
-        this.RageButton := New PixelInfo(this.SRC.GetX(0.85), this.SRC.GetY(0.13), True)
+    CheckToggle()
+    {
+        if (this._IsOn and this._IsMouseOn)
+        {
+            this.AscensionMenu.IsOn := True
+            this.EquipmentMenu.IsOn := True
+            this.ChestHunt.IsOn := True
+            this.BonusLevel.IsOn := True
+            return
+        }
+        this.AscensionMenu.IsOn := False
+        this.EquipmentMenu.IsOn := False
+        this.ChestHunt.IsOn := False
+        this.BonusLevel.IsOn := False
+        return
+    }
 
-        this.SilverButton := New PixelInfo(this.SRC.GetX(0.49), this.SRC.GetY(0.02))
+    IsOn[]
+    {
+        get
+        {
+            return this._IsOn
+        }
+        set
+        {
+            this._IsOn := value
+            this.CheckToggle()
+            return value
+        }
+    }
+
+    IsMouseOn[]
+    {
+        get
+        {
+            return this._IsMouseOn
+        }
+        set
+        {
+            this._IsMouseOn := value
+            this.CheckToggle()
+            return value
+        }
     }
 
     CheckRage()
     {
-        if (this.RageButton.CheckColor())
-        {
-            X1 := this.SRC.GetX(0.84)
-            Y1 := this.SRC.GetY(0.17)
-            X2 := this.SRC.GetX(0.86)
-            Y2 := this.SRC.GetY(0.19)
-
-            PixelSearch PX, PY, X1, Y1, X2, Y2, 0x02012E, 10, Fast
-            if ErrorLevel
-                Return True
-        }
+        if (this.RageButton.CheckColors(GameScreen.RageColors))
+            return !!(this.RageButton.SearchColorsAround(GameScreen.RageActiveColors, 10, 10))
         return False
     }
 
     CheckBoost()
     {
-        if (this.BoostButton.CheckColor())
-        {
-            X1 := this.SRC.GetX(0.08)
-            Y1 := this.SRC.GetY(0.79)
-            X2 := this.SRC.GetX(0.1)
-            Y2 := this.SRC.GetY(0.81)
-
-            PixelSearch PX, PY, X1, Y1, X2, Y2, 0x301604, 10, Fast
-            if ErrorLevel
-                Return True
-        }
+        if (this.BoostButton.CheckColors(GameScreen.BoostColors))
+            return !!(this.BoostButton.SearchColorsAround(GameScreen.BoostActiveColors, 10, 10))
         return False
     }
 
+    CheckSilver()
+    {
+        return !!(this.SilverButton.CheckColors(GameScreen.SilverColors))
+    }
+
+    Boost()
+    {
+        PressShift()
+    }
+
+    ShootBow()
+    {
+        PressSpace(1)
+    }
+
+    Jump(Delay := 20, Shots := 10)
+    {
+        PressSpace(Delay)
+
+        Loop %Shots%
+            this.ShootBow()
+    }
+
+    LowJump(Shoot := False)
+    {
+        Shots := Shoot ? 30 : 0
+        this.Jump(20, Shots)
+    }
+
+    MediumJump(Shoot := False)
+    {
+        Shots := Shoot ? 33 : 0
+        this.Jump(90, Shots)
+    }
+
+    HighJump(Shoot := False)
+    {
+        Shots := Shoot ? 36 : 0
+        this.Jump(165 , Shots)
+    }
 }
-
-#IfWinActive, Idle Slayer
-    I::
-        Game := New GameScreen()
-        MsgBox Initialized
-    Return
-
-    A::
-        v1:=Game.AscensionMenu.CloseButton.GetColor()
-        v2:=Game.AscensionMenu.IsOpen
-        MsgBox %v1% %v2%
-    Return
-    M::
-        Game.AscensionMenu.Minions()
-        Game.AscensionMenu.CloseMenu()
-    Return
-
-    R::
-        Loop
-        {
-            If (Game.RageButton.CheckColor())
-            {
-                MsgBox Rage Button Ready!
-                Break
-            }
-        }
-    Return
-
-    T::
-        Toggle := !Toggle
-    Return
-
-    H::
-        Toggle := False
-        Game.ChestHunt._IsOpen := True
-        Loop
-        {
-            if (Game.ChestHunt.CanClose or Toggle)
-            {
-                Game.ChestHunt.Close()
-                Break
-            }
-            Game.ChestHunt.ClickClosedChests()
-        }
-    Return
-
-    F3::
-        MouseGetPos, MouseX, MouseY
-        PixelGetColor, Color, (MouseX), MouseY
-        PixelGetColor, Color2, (MouseX + 50), MouseY
-        MsgBox %MouseX% %MouseY% - %Color%, %Color2%
-    Return
-
-#IfWinActive

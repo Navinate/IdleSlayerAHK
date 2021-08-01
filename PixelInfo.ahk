@@ -24,9 +24,9 @@ Class PixelInfo
     {
         if (!ColorID)
             ColorID := this.ColorID
-        If (this.GetColor() == ColorID)
-            Return True
-        Return False
+        if (this.GetColor() == ColorID)
+            return True
+        return False
     }
 
     CheckColors(ColorIDs)
@@ -39,15 +39,39 @@ Class PixelInfo
         return False
     }
 
+    SearchColorAround(ColorID, DX, DY)
+    {
+        PixelSearch, PX, PY, this.X - DX, this.Y - DY, this.X + DX, this.Y + DY, ColorID, 0, Fast
+        if ErrorLevel
+            return
+        return (New PixelInfo(PX, PY))
+    }
+
+    SearchColorsAround(ColorIDs, DX, DY)
+    {
+        for Index, Value in ColorIDs
+        {
+            PI := this.SearchColorAround(Value, DX, DY)
+            if PI
+                return PI
+        }
+        return
+    }
+
     GetColor()
     {
         PixelGetColor, TempColorID, this.X, this.Y
-        Return TempColorID
+        return TempColorID
     }
 
     Click(Delay := 50)
     {
         ClickAt(this.X, this.Y, Delay)
+    }
+
+    MouseMove(Delay := 0)
+    {
+        MouseMove, this.X, this.Y, 0
     }
 }
 
@@ -57,7 +81,7 @@ SearchAndInit(X1, Y1, X2, Y2, ColorID, Description := "Pixel", Variation:=10, Mo
     if ErrorLevel
     {
         MsgBox, Cant find %Description%.
-        Return
+        return
     }
-    Return New PixelInfo(PixelX, PixelY, True)
+    return New PixelInfo(PixelX, PixelY, True)
 }

@@ -50,10 +50,10 @@ Class BonusLevel
 
     Close()
     {
-        if (this.CanClose and this.IsOn)
+        if (this.CanClose and this.IsOn and this.IsOpen)
         {
             this.CloseButton.Click()
-            this.IsOn := False
+            this._IsOpen := False
         }
     }
 }

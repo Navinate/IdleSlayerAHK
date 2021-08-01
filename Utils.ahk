@@ -24,29 +24,3 @@ PressShift(Delay := 20)
     Sleep Delay
     Send {Shift Up}
 }
-
-; Jump(Delay := 20, Shots := 35)
-; {
-;     PressSpace(Delay)
-
-;     Loop %Shots%
-;         ShootBow()
-; }
-
-; LowJump(Shoot := False)
-; {
-;     Shots := Shoot ? 35 : 0
-;     Jump(20, Shots)
-; }
-
-; MediumJump(Shoot := False)
-; {
-;     Shots := Shoot ? 40 : 0
-;     Jump(90, Shots)
-; }
-
-; HighJump(Shoot := False)
-; {
-;     Shots := Shoot ? 43 : 0
-;     Jump(165 , Shots)
-; }
