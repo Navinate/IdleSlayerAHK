@@ -64,12 +64,12 @@ Class PixelInfo
         return TempColorID
     }
 
-    Click(Delay := 50)
+    Click(Delay := 50, Hold := 50)
     {
-        ClickAt(this.X, this.Y, Delay)
+        ClickAt(this.X, this.Y, Delay, Hold)
     }
 
-    MouseMove(Delay := 0)
+    MouseMove()
     {
         MouseMove, this.X, this.Y, 0
     }

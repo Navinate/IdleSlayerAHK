@@ -129,7 +129,7 @@ Class AutoBot
                 Return
 
             If (this.JumpToggle)
-                this.Game.Jump(Mod(A_Index, 10) * 18 + 3, 0)
+                this.Game.Jump(Mod(A_Index, 10) * 20 + 5, 0)
             Else 
             {
                 If (this.BottomToggle and !(Mod(A_Index, 15)))

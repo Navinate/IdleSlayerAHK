@@ -22,7 +22,7 @@ Class GameScreen
     static BoostActiveColors := [0x301604, 0x321704]
     static RageColors := [0x060393, 0x060399]
     static RageActiveColors := [0x020130, 0x02012E]
-    static SilverColors := [0x00A2D8]
+    static SilverColor := 0xFBD3AF
 
     __New()
     {
@@ -42,7 +42,7 @@ Class GameScreen
     {
         this.BoostButton := New PixelInfo(this.SRC.GetX(0.0883), this.SRC.GetY(0.8042)) ; 124, 624
         this.RageButton := New PixelInfo(this.SRC.GetX(0.8547), this.SRC.GetY(0.1223)) ; 1105, 133
-        this.SilverButton := New PixelInfo(this.SRC.GetX(0.5204), this.SRC.GetY(0.025)) ; 677, 63
+        this.SilverButton := New PixelInfo(this.SRC.GetX(0.5415), this.SRC.GetY(0.0209)) ; 701 46
     }
 
     CheckToggle()
@@ -93,20 +93,20 @@ Class GameScreen
     CheckRage()
     {
         if (this.RageButton.CheckColors(GameScreen.RageColors))
-            return !!(this.RageButton.SearchColorsAround(GameScreen.RageActiveColors, 10, 10))
+            return !(this.RageButton.SearchColorsAround(GameScreen.RageActiveColors, 10, 10))
         return False
     }
 
     CheckBoost()
     {
         if (this.BoostButton.CheckColors(GameScreen.BoostColors))
-            return !!(this.BoostButton.SearchColorsAround(GameScreen.BoostActiveColors, 10, 10))
+            return !(this.BoostButton.SearchColorsAround(GameScreen.BoostActiveColors, 10, 10))
         return False
     }
 
     CheckSilver()
     {
-        return !!(this.SilverButton.CheckColors(GameScreen.SilverColors))
+        return !!(this.SilverButton.CheckColor(GameScreen.SilverColor))
     }
 
     Boost()

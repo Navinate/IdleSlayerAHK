@@ -4,23 +4,25 @@ SendMode Input	; Recommended for new scripts due to its superior speed and relia
 SetWorkingDir %A_ScriptDir%	; Ensures a consistent starting directory.
 #SingleInstance, Force
 
-ClickAt(X, Y, Delay := 500)
+ClickAt(X, Y, Delay := 50, Hold := 50)
 {
     MouseMove X, Y, 0
-    Click
+    Click Down
+    Sleep Hold
+    Click Up
     Sleep Delay
 }
 
-PressSpace(Delay := 20)
+PressSpace(Hold := 20)
 {
     Send {Space Down}
-    Sleep Delay
+    Sleep Hold
     Send {Space Up}
 }
 
-PressShift(Delay := 20)
+PressShift(Hold := 20)
 {
     Send {Shift Down}
-    Sleep Delay
+    Sleep Hold
     Send {Shift Up}
 }

@@ -12,7 +12,7 @@ Class EquipmentMenu
     IsOn := False
 
     static MenuButtonColors := [0x929292, 0x989898]
-    static TabButtonColors := [0x243388, 0x25368E]
+    static TabButtonColors := [0x243388, 0x243488, 0x25368E]
     static CloseButtonColor := 0x1010A6
     static GreenColors := [0x23AA11, 0x22A310]
 
@@ -191,7 +191,7 @@ Class EquipmentMenu
 
         this.OpenEquipmentTab()
         Sleep 500
-        this.BotScrollBuyButton.Click()
+        this.BotScrollBuyButton.Click(,100)
         Sleep 500
 
         Loop 3
@@ -222,7 +222,7 @@ Class EquipmentMenu
 
         this.OpenEquipmentTab()
 
-        this.BotScrollBuyButton.Click()
+        this.BotScrollBuyButton.Click(,100)
         this.BotBuyButtons[1].Click()
     }
 
@@ -243,7 +243,7 @@ Class EquipmentMenu
             return
 
         this.OpenQuestsTab()
-        this.TopScrollQuestButton.Click()
+        this.TopScrollQuestButton.Click(,100)
 
         Loop 5
         {
@@ -262,11 +262,10 @@ Class EquipmentMenu
 
     CheckQuestUpdates()
     {
-        if (!this.IsOn or !this.IsUpdated)
+        if (!this.IsOn or (!this.IsOpen and !this.IsUpdated))
             return False
 
         this.OpenMenu()
-
         If (this.QuestsTabButton.CheckColors(EquipmentMenu.TabButtonColors))
             return False
         return True

@@ -187,7 +187,7 @@ Class AscensionMenu
 
         this.OpenMinionsTab()
 
-        this.TopScrollButton.Click()
+        this.TopScrollButton.Click(,100)
 
         For Index, Value in this.TopMinionButtons
         {
@@ -198,7 +198,7 @@ Class AscensionMenu
                 Value.Click()
         }
 
-        this.BotScrollButton.Click()
+        this.BotScrollButton.Click(,100)
 
         For Index, Value in this.BotMinionButtons
         {

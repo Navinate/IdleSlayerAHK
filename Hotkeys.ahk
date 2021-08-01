@@ -9,11 +9,18 @@ SetWorkingDir %A_ScriptDir%	; Ensures a consistent starting directory.
 Bot := New AutoBot()
 
 #IfWinNotActive Idle Slayer
-    ~LButton:: Toggle := False
+    ~LButton:: Bot.Toggle := False
 #IfWinNotActive
 
 #IfWinActive, Idle Slayer
-    ~RButton:: Toggle := False
+    ~RButton:: Bot.Toggle := False
+
+    F3::
+        MouseGetPos, MouseX, MouseY
+        PixelGetColor, Color, (MouseX), MouseY
+        PixelGetColor, Color2, (MouseX + 50), MouseY
+        MsgBox %MouseX% %MouseY% - %Color%, %Color2%
+    Return
 
     T::
         if (!Bot)
