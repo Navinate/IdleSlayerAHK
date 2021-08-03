@@ -9,6 +9,7 @@ Or you should set your resolution in GameScreen.ahk file
 
 ## Hotkeys:
 - T - Toggle Script
+- J - Toggle Auto Jump / Slow Jump
 - E - Enable Mouse Clicking
 - C - Toggle Mouse Clicking
 - W - Toggle All
