@@ -80,16 +80,8 @@ Class AscensionMenu
     {
         get
         {
-            if (this.MenuButton.CheckColors(AscensionMenu.MenuButtonColors))
-            {
+            if (this.MenuButton.CheckColors(AscensionMenu.MenuButtonColors) or !this.CloseButton.CheckColor(AscensionMenu.CloseButtonColor))
                 this._IsOpen := False
-                return False
-            }
-            if (!this.CloseButton.CheckColor(AscensionMenu.CloseButtonColor))
-            {
-                this._IsOpen := False
-                return False
-            }
             return this._IsOpen
         }
         set
@@ -110,64 +102,65 @@ Class AscensionMenu
 
     OpenMenu(Delay := 150)
     {
-        if (!this.IsOpen and this.IsOn)
-        {
-            this.MenuButton.Click(Delay)
-            this.IsOpen := True
-        }
+        if (!this.IsOn or this.IsOpen)
+            return
+
+        this.MenuButton.Click(Delay)
+        this.IsOpen := True
+        return this.IsOpen
     }
 
     CloseMenu()
     {
-        if (this.IsOpen and this.IsOn)
-        {
-            this.CloseButton.Click()
-            this.IsOpen := False
-        }
+        if (!this.IsOn or !this.IsOpen)
+            return
+
+        this.CloseButton.Click()
+        this.IsOpen := False
+        return !this.IsOpen
     }
 
     OpenMainTab()
     {
-        if (!this.IsOn)
-            return
+        if (!this.IsOn or !this.OpenMenu())
+            return False
 
-        this.OpenMenu()
         this.MainTabButton.Click()
+        return True
     }
 
     OpenAscensionTab()
     {
-        if (!this.IsOn)
-            return
+        if (!this.IsOn or !this.OpenMenu())
+            return False
 
-        this.OpenMenu()
         this.AscensionTabButton.Click()
+        return True
     }
 
     OpenMinionsTab()
     {
-        if (!this.IsOn)
-            return
+        if (!this.IsOn or !this.OpenMenu())
+            return False
 
-        this.OpenMenu()
         this.MinionsTabButton.Click()
+        return True
     }
 
     OpenDivinitiesTab()
     {
-        if (!this.IsOn)
-            return
+        if (!this.IsOn or !this.OpenMenu())
+            return False
 
-        this.OpenMenu()
         this.DivinitiesTabButton.Click()
+        return True
     }
 
     Ascend()
     {
-        if (!this.IsOn)
-            return
+        if (!this.IsOn or !this.OpenMainTab())
+            return False
 
-        this.OpenMainTab()
         this.AscendButton.Click(200)
 
         Success := False
@@ -178,14 +171,14 @@ Class AscensionMenu
 
         If (Success)
             this.IsOpen := False
+
+        return Success
     }
 
     Minions()
     {
-        if (!this.IsOn)
-            return
-
-        this.OpenMinionsTab()
+        if (!this.IsOn or !this.OpenMinionsTab())
+            return False
 
         this.TopScrollButton.Click(100,100)
 
@@ -208,5 +201,6 @@ Class AscensionMenu
             Loop 2
                 Value.Click()
         }
+        return True
     }
 }

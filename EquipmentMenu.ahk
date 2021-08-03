@@ -94,15 +94,11 @@ Class EquipmentMenu
         get
         {
             if (this.MenuButton.CheckColors(EquipmentMenu.MenuButtonColors))
-            {
-                this._IsOpen := False
-                return False
-            }
+                return this._IsOpen := False
+
             if (!this.CloseButton.CheckColor(EquipmentMenu.CloseButtonColor))
-            {
-                this._IsOpen := False
-                return False
-            }
+                return this._IsOpen := False
+
             return this._IsOpen
         }
         set
@@ -128,68 +124,69 @@ Class EquipmentMenu
 
         this.MenuButton.Click(Delay)
         this.IsOpen := True
+        return this.IsOpen
     }
 
     CloseMenu()
     {
-        if (!this.IsOn)
+        if (!this.IsOn or !this.IsOpen)
             return
 
         this.CloseButton.Click()
         this.IsOpen := False
+        return !this.IsOpen
     }
 
     OpenEquipmentTab()
     {
-        if (!this.IsOn)
-            return
+        if (!this.IsOn or !this.OpenMenu())
+            return False
 
-        this.OpenMenu()
         this.EquipmentTabButton.Click()
+        return True
     }
 
     OpenUpdatesTab()
     {
-        if (!this.IsOn)
-            return
+        if (!this.IsOn or !this.OpenMenu())
+            return False
 
-        this.OpenMenu()
         this.UpdatesTabButton.Click()
+        return True
     }
 
     OpenQuestsTab()
     {
-        if (!this.IsOn)
-            return
+        if (!this.IsOn or !this.OpenMenu())
+            return False
 
-        this.OpenMenu()
         this.QuestsTabButton.Click()
+        return True
     }
 
     OpenJewelsTab()
     {
-        if (!this.IsOn)
-            return
+        if (!this.IsOn or !this.OpenMenu())
+            return False
 
-        this.OpenMenu()
         this.JewelsTabButton.Click()
+        return True
     }
 
     OpenStatsTab()
     {
-        if (!this.IsOn)
-            return
+        if (!this.IsOn or !this.OpenMenu())
+            return False
 
-        this.OpenMenu()
         this.StatsTabButton.Click()
+        return True
     }
 
     BuyAll()
     {
-        if (!this.IsOn)
-            return
+        if (!this.IsOn or !this.OpenEquipmentTab())
+            return False
 
-        this.OpenEquipmentTab()
         this.BotScrollBuyButton.Click(100,100)
 
         Loop 3
@@ -211,36 +208,35 @@ Class EquipmentMenu
                 return
             Value.Click()
         }
+        return True
     }
 
     BuyLast()
     {
-        if (!this.IsOn)
-            return
-
-        this.OpenEquipmentTab()
+        if (!this.IsOn or !this.OpenEquipmentTab())
+            return False
 
         this.BotScrollBuyButton.Click(100,100)
         this.BotBuyButtons[1].Click()
+        return True
     }
 
     UpgradeAll()
     {
-        if (!this.IsOn)
-            return
-
-        this.OpenUpdatesTab()
+        if (!this.IsOn or !this.OpenUpdatesTab())
+            return False
 
         Loop 3
             this.UpdateAllButton.Click()
+        
+        return True
     }
 
     CompleteAllQuests()
     {
-        if (!this.IsOn)
-            return
+        if (!this.IsOn or !this.OpenQuestsTab())
+            return False
 
-        this.OpenQuestsTab()
         this.TopScrollQuestButton.Click(100,100)
 
         Loop 5
@@ -256,15 +252,13 @@ Class EquipmentMenu
                 Send {WheelDown}
             Sleep 300
         }
+
+        return True
     }
 
     CheckQuestUpdates()
     {
-        if (!this.IsOn or (!this.IsOpen and !this.IsUpdated))
-            return False
-
-        this.OpenMenu()
-        If (this.QuestsTabButton.CheckColors(EquipmentMenu.TabButtonColors))
+        if (!this.IsOn or (!this.IsOpen and !this.IsUpdated) or !this.OpenMenu() or this.QuestsTabButton.CheckColors(EquipmentMenu.TabButtonColors))
             return False
         return True
     }

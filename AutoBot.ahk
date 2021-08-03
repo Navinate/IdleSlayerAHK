@@ -153,13 +153,13 @@ Class AutoBot
                     this.Game.RageButton.Click()
 
                 If (this.PortalToggle and this.Game.CheckPortal())
-                    {
-                        this.Game.PortalButton.Click(500)
-                        this.Game.Portal.BasicYesButton.Click()
-                        Sleep 10000
-                    }
-
-                this.Game.BonusLevel.Close()
+                {
+                    this.Game.PortalButton.Click(500)
+                    this.Game.Portal.BasicYesButton.Click()
+                    Sleep 10000
+                }
+                If (this.BonusToggle)
+                    this.Game.BonusLevel.Close()
                 If (this.SilverToggle and this.Game.CheckSilver())
                     this.Game.SilverButton.Click()
 
