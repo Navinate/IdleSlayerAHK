@@ -10,8 +10,9 @@ Class BonusLevel
 {
     _IsOpen := False
     IsOn := False
-    static GreenColor := 0x00A100
-    static RedColor := 0x0000AD
+    static GreenColors := [0x00A100, 0x00A800]
+    static RedColors := [0x0000AD, 0x0000B4]
+    static PinkTopColor := 0xFF9BFA
 
     __New(SRC)
     {
@@ -26,14 +27,20 @@ Class BonusLevel
     {
         get
         {
+            return (this.CanStart or this._IsOpen)
+        }
+    }
 
-            if (this.StartButton.CheckColor(BonusLevel.GreenColor))
+    CanStart[]
+    {
+        get
+        {
+            if (this.StartButton.CheckColors(BonusLevel.GreenColors))
             {
                 this._IsOpen := True
                 return True
             }
-
-            return this._IsOpen
+            return False
         }
     }
 
@@ -41,7 +48,7 @@ Class BonusLevel
     {
         get
         {
-            if (this.CloseButton.CheckColor(BonusLevel.RedColor))
+            if (this.CloseButton.CheckColors(BonusLevel.RedColors))
                 return True
 
             return False
@@ -50,6 +57,8 @@ Class BonusLevel
 
     Close()
     {
+        if (this.CanStart and this.IsOn and this.IsOpen)
+            this.StartButton.Click(200)
         if (this.CanClose and this.IsOn and this.IsOpen)
         {
             this.CloseButton.Click()

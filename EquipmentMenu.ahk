@@ -190,9 +190,7 @@ Class EquipmentMenu
             return
 
         this.OpenEquipmentTab()
-        Sleep 500
-        this.BotScrollBuyButton.Click(,100)
-        Sleep 500
+        this.BotScrollBuyButton.Click(100,100)
 
         Loop 3
         {
@@ -222,7 +220,7 @@ Class EquipmentMenu
 
         this.OpenEquipmentTab()
 
-        this.BotScrollBuyButton.Click(,100)
+        this.BotScrollBuyButton.Click(100,100)
         this.BotBuyButtons[1].Click()
     }
 
@@ -243,7 +241,7 @@ Class EquipmentMenu
             return
 
         this.OpenQuestsTab()
-        this.TopScrollQuestButton.Click(,100)
+        this.TopScrollQuestButton.Click(100,100)
 
         Loop 5
         {

@@ -32,18 +32,20 @@ Bot := New AutoBot()
         Bot.Join()
     Return
 
+    E:: Bot.ClickToggle := True
     C:: Bot.ClickToggle := !Bot.ClickToggle
     W:: Bot.ToggleAll()
 
     R:: Bot.RageToggle := !Bot.RageToggle
     ^R:: Bot.Game.RageButton.Click()
+    P:: Bot.PortalToggle := !Bot.PortalToggle
     B:: Bot.BonusToggle := !Bot.BonusToggle
     H:: Bot.ChestHuntToggle := !Bot.ChestHuntToggle
     ^H::
         ClickToggle := Bot.ClickToggle
         IsOn := Bot.Game.ChestHunt.IsOn
         Bot.ClickToggle := False
-        Bot.Game.ChestHunt.IsOn := True
+        Bot.Game.ChestHunt.IsOn := True 
         Bot.Game.ChestHunt.ClickClosedChests()
         Bot.ClickToggle := ClickToggle
     Return
@@ -55,7 +57,11 @@ Bot := New AutoBot()
         Bot.ClickToggle := False
         Bot.Game.AscensionMenu.IsOn := True
         Bot.Game.AscensionMenu.Ascend()
+        Sleep 500
+        Bot.Game.AscensionMenu.OpenAscensionTab()
         Bot.Game.AscensionMenu.CloseMenu()
+        Bot.BuyPeriod := 100
+        Bot.BuyOldQMax := True
         Bot.ClickToggle := ClickToggle
     Return
     M:: Bot.MinionsToggle := !Bot.MinionsToggle

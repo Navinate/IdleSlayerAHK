@@ -27,7 +27,7 @@ Class AutoBot
     BottomToggle := False
     BoostToggle := False
 
-    BuyPeriod := 300
+    BuyPeriod := 900
     BuyOldQMax := False
 
     __New()
@@ -104,7 +104,7 @@ Class AutoBot
         }
         this.RageToggle := False
         this.SilverToggle := False
-        ; this.PortalToggle := False
+        this.PortalToggle := False
         this.BonusToggle := False
         this.ChestHuntToggle := False
 
@@ -132,37 +132,55 @@ Class AutoBot
                 this.Game.Jump(Mod(A_Index, 10) * 20 + 5, 0)
             Else 
             {
-                If (this.BottomToggle and !(Mod(A_Index, 15)))
+                If (this.BottomToggle and !(Mod(A_Index, 20)))
                     this.Game.Jump(100, 0)
                 Else 
                     Sleep, 100
             }
-            If (this.ChestHuntToggle and this.Game.ChestHunt.IsOpen)
-                this.Game.ChestHunt.Complete()
-
-            If (this.RageToggle and this.Game.CheckRage())
-                this.Game.RageButton.Click()
-
-            Loop
-            {
-                If (!this.BonusToggle or !this.Game.BonusLevel.IsOpen)
-                    Break
-                this.Game.BonusLevel.Close()
-                Sleep 500
-            }
-            If (this.SilverToggle and this.Game.CheckSilver())
-                this.Game.SilverButton.Click()
 
             If (this.BoostToggle)
                 this.Game.Boost()
 
+            If (!this.ClickToggle)
+                Continue
+
+            If (Mod(A_Index, 50) == 0)
+            {
+                If (this.ChestHuntToggle and this.Game.ChestHunt.IsOpen)
+                    this.Game.ChestHunt.Complete()
+
+                If (this.RageToggle and this.Game.CheckRage())
+                    this.Game.RageButton.Click()
+
+                If (this.PortalToggle and this.Game.CheckPortal())
+                    {
+                        this.Game.PortalButton.Click(500)
+                        this.Game.Portal.BasicYesButton.Click()
+                        Sleep 10000
+                    }
+
+                this.Game.BonusLevel.Close()
+                If (this.SilverToggle and this.Game.CheckSilver())
+                    this.Game.SilverButton.Click()
+
+                If (this.MinionsToggle and this.Game.AscensionMenu.IsUpdated)
+                {
+                    this.Game.AscensionMenu.Minions()
+                    If (this.Game.AscensionMenu.IsUpdated)
+                        this.Game.AscensionMenu.OpenAscensionTab()
+                    this.Game.AscensionMenu.CloseMenu()
+                }
+            }
             If (this.OldItemsToggle and (Mod(A_Index, this.BuyPeriod) == 0))
             {
                 this.Game.EquipmentMenu.OpenEquipmentTab()
-                If (this.BuyOldQMax)
-                    this.Game.EquipmentMenu.QMaxButton.Click()
-                Else
-                    this.Game.EquipmentMenu.Q50Button.Click()
+                If (this.Game.EquipmentMenu.IsOpen)
+                {
+                    If (this.BuyOldQMax)
+                        this.Game.EquipmentMenu.QMaxButton.Click()
+                    Else
+                        this.Game.EquipmentMenu.Q50Button.Click()
+                }
                 this.Game.EquipmentMenu.BuyAll()
                 if (this.QuestsToggle and this.Game.EquipmentMenu.CheckQuestUpdates())
                     this.Game.EquipmentMenu.CompleteAllQuests()
@@ -171,7 +189,8 @@ Class AutoBot
             If (this.LastItemToggle and (Mod(A_Index, this.BuyPeriod) == Floor(this.BuyPeriod / 3)))
             {
                 this.Game.EquipmentMenu.OpenEquipmentTab()
-                this.Game.EquipmentMenu.QMaxButton.Click()
+                If (this.Game.EquipmentMenu.IsOpen)
+                    this.Game.EquipmentMenu.QMaxButton.Click()
                 this.Game.EquipmentMenu.BuyLast()
                 if (this.QuestsToggle and this.Game.EquipmentMenu.CheckQuestUpdates())
                     this.Game.EquipmentMenu.CompleteAllQuests()
@@ -184,23 +203,19 @@ Class AutoBot
                     this.Game.EquipmentMenu.CompleteAllQuests()
                 this.Game.EquipmentMenu.CloseMenu()
             }
-            If (this.MinionsToggle and this.Game.AscensionMenu.IsUpdated)
+
+            If (Mod(A_Index, 1000) == 0)
             {
-                this.Game.AscensionMenu.Minions()
-                If (this.Game.AscensionMenu.IsUpdated)
-                    this.Game.AscensionMenu.OpenAscensionTab()
-                this.Game.AscensionMenu.CloseMenu()
-            }
-            If (Mod(A_Index, 1500) == 0)
-            {
-                this.BuyPeriod := 300
+                this.BuyPeriod := 900
                 this.BuyOldQMax := False
             }
-            If (this.AscentionToggle and (Mod(A_Index, 1500) == 1000))
+            If (this.AscentionToggle and (Mod(A_Index, 15000) == 14000))
             {
                 this.Game.AscensionMenu.Ascend()
+                Sleep 500
+                this.Game.AscensionMenu.OpenAscensionTab()
                 this.Game.AscensionMenu.CloseMenu()
-                this.BuyPeriod := 50
+                this.BuyPeriod := 100
                 this.BuyOldQMax := True
             }
 
