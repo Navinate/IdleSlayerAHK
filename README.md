@@ -1,5 +1,8 @@
 # Idle Slayer AutoBot Script
 
+It's recommended to use 1280x720 Resolution Windowed.
+Or you should set your resolution in GameScreen.ahk file
+
 ## To start:
 - Install AutoHotkey v1.1
 - Run Hotkeys.ahk file
