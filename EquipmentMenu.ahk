@@ -194,7 +194,7 @@ Class EquipmentMenu
             For Index, Value in this.BotBuyButtons
             {
                 if (!this.IsOn)
-                    return
+                    return False
                 if (Value.CheckColors(EquipmentMenu.GreenColors))
                     Value.Click()
             }
@@ -206,7 +206,7 @@ Class EquipmentMenu
         For Index, Value in this.TopBuyButtons
         {
             if (!this.IsOn)
-                return
+                return False
             if (Value.CheckColors(EquipmentMenu.GreenColors))
                 Value.Click()
         }

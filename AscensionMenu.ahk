@@ -85,9 +85,9 @@ Class AscensionMenu
 
         MissionButtonY := this.SRC.GetY(0.5139)
         MaxTextY := this.SRC.GetY(0.4848)
-        this.BotMinionButtons := []
+        this.BotMinions := []
         Loop 2
-            this.BotMinionButtons.Push({ MissionButton: New PixelInfo(MissionButtonX, MissionButtonY + DeltaY * (A_Index - 1)), MaxText: New PixelInfo(MaxTextX, MaxTextY + DeltaY * (A_Index - 1)), PrestigeButton: New PixelInfo(PrestigeButtonX, MaxTextY + DeltaY * (A_Index - 1)) }) ; 415, 565
+            this.BotMinions.Push({ MissionButton: New PixelInfo(MissionButtonX, MissionButtonY + DeltaY * (A_Index - 1)), MaxText: New PixelInfo(MaxTextX, MaxTextY + DeltaY * (A_Index - 1)), PrestigeButton: New PixelInfo(PrestigeButtonX, MaxTextY + DeltaY * (A_Index - 1)) }) ; 415, 565
     }
 
     IsOpen[]
@@ -207,7 +207,7 @@ Class AscensionMenu
 
         this.TopScrollButton.Click(100,100)
 
-        For Index, Value in this.TopMinionButtons
+        For Index, Value in this.TopMinions
         {
             if (!this.IsOn)
                 return
@@ -217,7 +217,7 @@ Class AscensionMenu
 
         this.BotScrollButton.Click(100,100)
 
-        For Index, Value in this.BotMinionButtons
+        For Index, Value in this.BotMinions
         {
             if (!this.IsOn)
                 return
