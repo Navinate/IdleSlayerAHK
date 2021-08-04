@@ -18,6 +18,7 @@ Class AutoBot
 
     AscentionToggle := False
     MinionsToggle := False
+    PrestigeToggle := False
     LastItemToggle := False
     OldItemsToggle := False
     UpgradesToggle := False
@@ -165,7 +166,7 @@ Class AutoBot
 
                 If (this.MinionsToggle and this.Game.AscensionMenu.IsUpdated)
                 {
-                    this.Game.AscensionMenu.Minions()
+                    this.Game.AscensionMenu.Minions(this.PrestigeToggle)
                     If (this.Game.AscensionMenu.IsUpdated)
                         this.Game.AscensionMenu.OpenAscensionTab()
                     this.Game.AscensionMenu.CloseMenu()

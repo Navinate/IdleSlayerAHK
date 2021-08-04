@@ -26,7 +26,7 @@ Class EquipmentMenu
 
     InitMenuButton()
     {
-        this.MenuButton := New PixelInfo(this.SRC.GetX(0.8821), this.SRC.GetY(0.8195)) ; 1140, 635
+        this.MenuButton := New PixelInfo(this.SRC.GetX(0.8805), this.SRC.GetY(0.9112)) ; 1135, 687
     }
 
     InitTabButtons()
@@ -119,21 +119,21 @@ Class EquipmentMenu
 
     OpenMenu(Delay := 150)
     {
-        if (!this.IsOn or this.IsOpen)
-            return
-
-        this.MenuButton.Click(Delay)
-        this.IsOpen := True
+        if (this.IsOn and !this.IsOpen)
+        {
+            this.MenuButton.Click(Delay)
+            this.IsOpen := True
+        }
         return this.IsOpen
     }
 
     CloseMenu()
     {
-        if (!this.IsOn or !this.IsOpen)
-            return
-
-        this.CloseButton.Click()
-        this.IsOpen := False
+        if (this.IsOn and this.IsOpen)
+        {
+            this.CloseButton.Click()
+            this.IsOpen := False
+        }
         return !this.IsOpen
     }
 
@@ -195,7 +195,8 @@ Class EquipmentMenu
             {
                 if (!this.IsOn)
                     return
-                Value.Click()
+                if (Value.CheckColors(EquipmentMenu.GreenColors))
+                    Value.Click()
             }
 
             Loop 8 
@@ -206,7 +207,8 @@ Class EquipmentMenu
         {
             if (!this.IsOn)
                 return
-            Value.Click()
+            if (Value.CheckColors(EquipmentMenu.GreenColors))
+                Value.Click()
         }
         return True
     }
@@ -217,7 +219,8 @@ Class EquipmentMenu
             return False
 
         this.BotScrollBuyButton.Click(100,100)
-        this.BotBuyButtons[1].Click()
+        if (this.BotBuyButtons[1].CheckColors(EquipmentMenu.GreenColors))
+            this.BotBuyButtons[1].Click()
         return True
     }
 
@@ -228,7 +231,7 @@ Class EquipmentMenu
 
         Loop 3
             this.UpdateAllButton.Click()
-        
+
         return True
     }
 

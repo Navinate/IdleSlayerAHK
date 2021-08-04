@@ -18,6 +18,7 @@ Class AscensionMenu
     static CompleteMissionColors := [0x23AA11, 0x22A310]
     static StartMissionColors := [0x8B1856, 0x861753]
     static GreenColor := 0x00A100
+    static WhiteColor := 0xFFFFFF
 
     __New(SRC)
     {
@@ -59,9 +60,9 @@ Class AscensionMenu
         Y := this.SRC.GetY(0.7778) ; 605
         this.AscendButton := New PixelInfo(this.SRC.GetX(0.0891), Y) ; 125
 
-        this.AscendModalYesButton := New PixelInfo(this.SRC.GetX(0.4758), Y) ; 620
+        this.ModalYesButton := New PixelInfo(this.SRC.GetX(0.4758), Y) ; 620
 
-        this.AscendModalNoButton := New PixelInfo(this.SRC.GetX(0.6086), Y) ; 790
+        this.ModalNoButton := New PixelInfo(this.SRC.GetX(0.6086), Y) ; 790
     }
 
     InitMinionButtons()
@@ -69,11 +70,24 @@ Class AscensionMenu
         this.TopScrollButton := New PixelInfo(this.SRC.GetX(0.4719), this.SRC.GetY(0.3125), True, 0xD6D6D6) ; 615, 270
         this.BotScrollButton := New PixelInfo(this.SRC.GetX(0.4719), this.SRC.GetY(0.8403), True, 0xD6D6D6) ; 615, 650
 
-        X := this.SRC.GetX(0.4368) ; 570
+        MissionButtonX := this.SRC.GetX(0.4368) ; 570
+        MaxTextX := this.SRC.GetX(0.1102) ; 149
+        PrestigeButtonX := this.SRC.getX(0.1735) ; 230
 
-        this.TopMinionButtons := [ New PixelInfo(X, this.SRC.GetY(0.3542)), New PixelInfo(X, this.SRC.GetY(0.5625)), New PixelInfo(X, this.SRC.GetY(0.7709)) ] ; 300, 450, 600
+        DeltaY := this.SRC.getDY(0.2084) ; 150
+        MissionButtonY := this.SRC.GetY(0.3542)
+        MaxTextY := this.SRC.GetY(0.3348)
+        this.TopMinions := []
+        Loop 3
+        {
+            this.TopMinions.Push({ MissionButton: (New PixelInfo(MissionButtonX, MissionButtonY + DeltaY * (A_Index - 1))), MaxText: (New PixelInfo(MaxTextX, MaxTextY + DeltaY * (A_Index - 1))), PrestigeButton: (New PixelInfo(PrestigeButtonX, MaxTextY + DeltaY * (A_Index - 1))) }) ; 300, 450, 600
+        }
 
-        this.BotMinionButtons := [ New PixelInfo(X, this.SRC.GetY(0.5139)), New PixelInfo(X, this.SRC.GetY(0.7223)) ] ; 415, 565
+        MissionButtonY := this.SRC.GetY(0.5139)
+        MaxTextY := this.SRC.GetY(0.4848)
+        this.BotMinionButtons := []
+        Loop 2
+            this.BotMinionButtons.Push({ MissionButton: New PixelInfo(MissionButtonX, MissionButtonY + DeltaY * (A_Index - 1)), MaxText: New PixelInfo(MaxTextX, MaxTextY + DeltaY * (A_Index - 1)), PrestigeButton: New PixelInfo(PrestigeButtonX, MaxTextY + DeltaY * (A_Index - 1)) }) ; 415, 565
     }
 
     IsOpen[]
@@ -102,21 +116,21 @@ Class AscensionMenu
 
     OpenMenu(Delay := 150)
     {
-        if (!this.IsOn or this.IsOpen)
-            return
-
-        this.MenuButton.Click(Delay)
-        this.IsOpen := True
+        if (this.IsOn and !this.IsOpen)
+        {
+            this.MenuButton.Click(Delay)
+            this.IsOpen := True
+        }
         return this.IsOpen
     }
 
     CloseMenu()
     {
-        if (!this.IsOn or !this.IsOpen)
-            return
-
-        this.CloseButton.Click()
-        this.IsOpen := False
+        if (this.IsOn and this.IsOpen)
+        {
+            this.CloseButton.Click()
+            this.IsOpen := False
+        }
         return !this.IsOpen
     }
 
@@ -164,10 +178,10 @@ Class AscensionMenu
         this.AscendButton.Click(200)
 
         Success := False
-        If (this.AscendModalYesButton.CheckColor(AscensionMenu.GreenColor))
+        If (this.ModalYesButton.CheckColor(AscensionMenu.GreenColor))
             Success := True
 
-        this.AscendModalYesButton.Click()
+        this.ModalYesButton.Click()
 
         If (Success)
             this.IsOpen := False
@@ -175,7 +189,18 @@ Class AscensionMenu
         return Success
     }
 
-    Minions()
+    RestartMission(MinionInfo, Prestige := False)
+    {
+        MinionInfo.MissionButton.Click()
+        if (Prestige and MinionInfo.MaxText.CheckColor(AscensionMenu.WhiteColor))
+        {
+            MinionInfo.PrestigeButton.Click(200)
+            this.ModalYesButton.Click()
+        }
+        MinionInfo.MissionButton.Click()
+    }
+
+    Minions(AutoPrestige := False)
     {
         if (!this.IsOn or !this.OpenMinionsTab())
             return False
@@ -187,8 +212,7 @@ Class AscensionMenu
             if (!this.IsOn)
                 return
 
-            Loop 2
-                Value.Click()
+            this.RestartMission(Value, AutoPrestige)
         }
 
         this.BotScrollButton.Click(100,100)
@@ -198,8 +222,7 @@ Class AscensionMenu
             if (!this.IsOn)
                 return
 
-            Loop 2
-                Value.Click()
+            this.RestartMission(Value, AutoPrestige)
         }
         return True
     }

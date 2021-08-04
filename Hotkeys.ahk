@@ -74,6 +74,16 @@ Bot := New AutoBot()
         Bot.Game.AscensionMenu.CloseMenu()
         Bot.ClickToggle := ClickToggle
     Return
+    ,:: Bot.PrestigeToggle := !Bot.PrestigeToggle
+    ^,:: 
+        ClickToggle := Bot.ClickToggle
+        IsOn := Bot.Game.AscensionMenu.IsOn
+        Bot.ClickToggle := False
+        Bot.Game.AscensionMenu.IsOn := True
+        Bot.Game.AscensionMenu.Minions(True)
+        Bot.Game.AscensionMenu.CloseMenu()
+        Bot.ClickToggle := ClickToggle
+    Return
     L:: Bot.LastItemToggle := !Bot.LastItemToggle
     ^L::
         ClickToggle := Bot.ClickToggle
