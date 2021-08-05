@@ -16,7 +16,7 @@ Class AutoBot
     SilverToggle := False
     PortalToggle := False
 
-    AscentionToggle := False
+    AscensionToggle := False
     MinionsToggle := False
     PrestigeToggle := False
     LastItemToggle := False
@@ -91,7 +91,7 @@ Class AutoBot
             this.BonusToggle := True
             this.ChestHuntToggle := True
 
-            this.AscentionToggle := True
+            this.AscensionToggle := True
             this.MinionsToggle := True
             this.LastItemToggle := True
             this.OldItemsToggle := True
@@ -109,7 +109,7 @@ Class AutoBot
         this.BonusToggle := False
         this.ChestHuntToggle := False
 
-        this.AscentionToggle := False
+        this.AscensionToggle := False
         this.MinionsToggle := False
         this.LastItemToggle := False
         this.OldItemsToggle := False
@@ -210,7 +210,7 @@ Class AutoBot
                 this.BuyPeriod := 900
                 this.BuyOldQMax := False
             }
-            If (this.AscentionToggle and (Mod(A_Index, 15000) == 14000))
+            If (this.AscensionToggle and (Mod(A_Index, 15000) == 14000))
             {
                 this.Game.AscensionMenu.Ascend()
                 Sleep 500

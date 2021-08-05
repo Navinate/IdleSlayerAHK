@@ -195,7 +195,7 @@ Class AscensionMenu
         if (Prestige and MinionInfo.MaxText.CheckColor(AscensionMenu.WhiteColor))
         {
             MinionInfo.PrestigeButton.Click(200)
-            this.ModalYesButton.Click()
+            this.ModalYesButton.Click(200)
         }
         MinionInfo.MissionButton.Click()
     }
