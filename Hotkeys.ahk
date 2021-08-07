@@ -70,7 +70,8 @@ Bot := New AutoBot()
         IsOn := Bot.Game.AscensionMenu.IsOn
         Bot.ClickToggle := False
         Bot.Game.AscensionMenu.IsOn := True
-        Bot.Game.AscensionMenu.Minions()
+        Loop 7
+            Bot.Game.AscensionMenu.Minions(A_Index - 1)
         Bot.Game.AscensionMenu.CloseMenu()
         Bot.ClickToggle := ClickToggle
     Return
@@ -80,7 +81,8 @@ Bot := New AutoBot()
         IsOn := Bot.Game.AscensionMenu.IsOn
         Bot.ClickToggle := False
         Bot.Game.AscensionMenu.IsOn := True
-        Bot.Game.AscensionMenu.Minions(True)
+        Loop 7
+            Bot.Game.AscensionMenu.Minions(A_Index - 1, True)
         Bot.Game.AscensionMenu.CloseMenu()
         Bot.ClickToggle := ClickToggle
     Return
@@ -92,6 +94,8 @@ Bot := New AutoBot()
         Bot.Game.EquipmentMenu.IsOn := True
         Bot.Game.EquipmentMenu.OpenEquipmentTab()
         Bot.Game.EquipmentMenu.QMaxButton.Click()
+        Loop 3
+            Bot.Game.EquipmentMenu.BuyLast(A_Index - 1)
         Bot.Game.EquipmentMenu.BuyLast()
         Bot.Game.EquipmentMenu.CloseMenu()
         Bot.ClickToggle := ClickToggle
@@ -104,9 +108,11 @@ Bot := New AutoBot()
         Bot.Game.EquipmentMenu.IsOn := True
         Bot.Game.EquipmentMenu.OpenEquipmentTab()
         Bot.Game.EquipmentMenu.QMaxButton.Click()
-        Bot.Game.EquipmentMenu.BuyAll()
+        Loop 22
+            Bot.Game.EquipmentMenu.BuyAll(A_Index - 1)
         Bot.Game.EquipmentMenu.CloseMenu()
         Bot.ClickToggle := ClickToggle
+        Bot.Game.EquipmentMenu.IsOn := IsOn
     Return
     U:: Bot.UpgradesToggle := !Bot.UpgradesToggle
     ^U::
@@ -132,4 +138,8 @@ Bot := New AutoBot()
     ^Z:: Bot.Game.Boost()
 
     J:: Bot.ToggleJump()
+    V:: 
+        Var1 := Bot.Minions
+        %Var1%(0)
+    Return
 #IfWinActive

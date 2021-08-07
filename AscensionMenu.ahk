@@ -200,30 +200,33 @@ Class AscensionMenu
         MinionInfo.MissionButton.Click()
     }
 
-    Minions(AutoPrestige := False)
+    Minions(IndexOp, AutoPrestige := False)
     {
-        if (!this.IsOn or !this.OpenMinionsTab())
-            return False
+        if (!this.IsOn)
+            return True
 
-        this.TopScrollButton.Click(100,100)
-
-        For Index, Value in this.TopMinions
+        Switch IndexOp
         {
-            if (!this.IsOn)
-                return
-
-            this.RestartMission(Value, AutoPrestige)
+        case 0:
+            if (!this.OpenMinionsTab())
+                return True
+        case 1:
+            this.TopScrollButton.Click(200,100)
+        case 2,3,4:
+            this.RestartMission(this.TopMinions[IndexOp-1], AutoPrestige)
+        case 5:
+            this.BotScrollButton.Click(200,100)
+        case 6,7:
+            this.RestartMission(this.BotMinions[IndexOp-5], AutoPrestige)
+        case 8:
+            {
+                Return True
+            }
+        Default:
+            {
+                Return False
+            }
         }
-
-        this.BotScrollButton.Click(100,100)
-
-        For Index, Value in this.BotMinions
-        {
-            if (!this.IsOn)
-                return
-
-            this.RestartMission(Value, AutoPrestige)
-        }
-        return True
+        return False
     }
 }

@@ -11,7 +11,6 @@ Class ChestHunt
     _IsOpen := False
     IsOn := False
     static RedColors := [0x0000AD, 0x0000B4]
-    static StartBackgroundColors := [0x111B21, 0x111C22]
     static ChestKeyHoleColor := 0x31BBFF
 
     __New(SRC)
@@ -41,10 +40,14 @@ Class ChestHunt
     {
         get
         {
-            if (this.CloseButton.CheckColors(ChestHunt.StartBackgroundColors))
+            if (!this._IsOpen)
             {
+                For Index, Value in this.Chests
+                {
+                    if (!Value.CheckColor(ChestHunt.ChestKeyHoleColor))
+                        return False
+                }
                 this._IsOpen := True
-                return True
             }
             return this._IsOpen
         }

@@ -55,14 +55,20 @@ Class BonusLevel
         }
     }
 
-    Close()
+    Complete()
     {
         if (this.CanStart and this.IsOn and this.IsOpen)
             this.StartButton.Click(200)
-        if (this.CanClose and this.IsOn and this.IsOpen)
+        Loop
         {
-            this.CloseButton.Click()
-            this._IsOpen := False
+            if (!this.IsOn or !this.IsOpen)
+                Return False
+            if (this.CanClose)
+            {
+                this.CloseButton.Click()
+                this._IsOpen := False
+                Return True
+            }
         }
     }
 }

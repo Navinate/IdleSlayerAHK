@@ -14,6 +14,7 @@ Class EquipmentMenu
     static MenuButtonColors := [0x929292, 0x989898]
     static TabButtonColors := [0x243388, 0x243488, 0x25368E]
     static CloseButtonColor := 0x1010A6
+    static ScrollBarColors := [0xF5F5F5, 0xD6D6D6, 0xFFFFFF]
     static GreenColors := [0x23AA11, 0x22A310]
 
     __New(SRC)
@@ -68,23 +69,34 @@ Class EquipmentMenu
         this.QMaxButton := New PixelInfo(this.SRC.GetX(0.9172), Y) ; 1185
 
         X := this.SRC.GetX(0.9563) ; 1235
-        this.TopBuyButtons := []
-        StartY := this.SRC.GetY(0.2431) ; 220
         DeltaY := this.SRC.GetDY(0.1389) ; 100
-        Loop 4
-            this.TopBuyButtons.Push(New PixelInfo(X, StartY + DeltaY * (A_Index - 1)))
 
         this.BotBuyButtons := []
-
-        StartY := this.SRC.GetY(0.7153) ; 560
+        StartY := this.SRC.GetY(0.7237) ; 566
         Loop 4
             this.BotBuyButtons.Push(New PixelInfo(X, StartY - DeltaY * (A_Index - 1)))
 
+        this.TopBuyButtons := []
+        StartY := this.SRC.GetY(0.2431) ; 220
+        Loop 4
+            this.TopBuyButtons.Push(New PixelInfo(X, StartY + DeltaY * (A_Index - 1)))
+        
+        X := this.SRC.GetX(0.9688) ; 1246
+        this.BuyButtonsNoBar := []
+        Loop 4
+            this.BuyButtonsNoBar.Push(New PixelInfo(X, StartY + DeltaY * (A_Index - 1)))
+
         this.UpdateAllButton := this.Q10Button
 
-        this.QuestButtons := []
+        this.QuestButtonsBar := []
+        X := this.SRC.GetX(0.9563) ; 1235
         StartY := this.SRC.GetY(0.3542) ; 300
         DeltaY := this.SRC.GetDY(0.0459) ; 33
+        Loop 10
+            this.QuestButtons.Push(New PixelInfo(X, StartY + DeltaY * (A_Index - 1)))
+
+        this.QuestButtonsNoBar := []
+        X := this.SRC.GetX(0.9688) ; 1246
         Loop 10
             this.QuestButtons.Push(New PixelInfo(X, StartY + DeltaY * (A_Index - 1)))
     }
@@ -182,87 +194,127 @@ Class EquipmentMenu
         return True
     }
 
-    BuyAll()
+    BuyAll(IndexOp)
     {
-        if (!this.IsOn or !this.OpenEquipmentTab())
-            return False
+        if (!this.IsOn)
+            return True
 
-        this.BotScrollBuyButton.Click(100,100)
+        NoBar := !this.BotScrollBuyButton.CheckColors(EquipmentMenu.ScrollBarColors)
+        TBB := NoBar ? this.BuyButtonsNoBar : this.TopBuyButtons
 
-        Loop 3
+        Switch IndexOp
         {
-            For Index, Value in this.BotBuyButtons
-            {
-                if (!this.IsOn)
-                    return False
-                if (Value.CheckColors(EquipmentMenu.GreenColors))
-                    Value.Click()
-            }
+        case 0:
+            if (!this.OpenEquipmentTab())
+                return True
+        case 1:
+            this.BotScrollBuyButton.Click(200,100)
 
+        case 2, 3, 4, 5, 7, 8, 9, 10, 12, 13, 14, 15:
+            Ind := Mod(IndexOp - 1, 5)
+            if (this.BotBuyButtons[Ind].CheckColors(EquipmentMenu.GreenColors))
+                this.BotBuyButtons[Ind].Click()
+
+        case 6, 11, 16:
             Loop 8 
                 Send {WheelUp}
             Sleep 300
-        }
-        For Index, Value in this.TopBuyButtons
-        {
-            if (!this.IsOn)
-                return False
-            if (Value.CheckColors(EquipmentMenu.GreenColors))
-                Value.Click()
-        }
-        return True
-    }
 
-    BuyLast()
-    {
-        if (!this.IsOn or !this.OpenEquipmentTab())
-            return False
+        case 17, 18, 19, 20:
+            Ind := IndexOp - 16
+            if (TBB[Ind].CheckColors(EquipmentMenu.GreenColors))
+                TBB[Ind].Click()
 
-        this.BotScrollBuyButton.Click(100,100)
-        if (this.BotBuyButtons[1].CheckColors(EquipmentMenu.GreenColors))
-            this.BotBuyButtons[1].Click()
-        return True
-    }
-
-    UpgradeAll()
-    {
-        if (!this.IsOn or !this.OpenUpdatesTab())
-            return False
-
-        Loop 3
-            this.UpdateAllButton.Click()
-
-        return True
-    }
-
-    CompleteAllQuests()
-    {
-        if (!this.IsOn or !this.OpenQuestsTab())
-            return False
-
-        this.TopScrollQuestButton.Click(100,100)
-
-        Loop 5
-        {
-            For Index, QButton in this.QuestButtons
+        case 21:
             {
-                if (!this.IsOn)
-                    return
-                if (QButton.CheckColors(EquipmentMenu.GreenColors))
-                    QButton.Click()
+                return True
             }
-            Loop 8 
-                Send {WheelDown}
-            Sleep 300
+        Default:
+            {
+                Return False
+            }
         }
-
-        return True
+        return False
     }
 
-    CheckQuestUpdates()
+    BuyLast(IndexOp)
     {
-        if (!this.IsOn or (!this.IsOpen and !this.IsUpdated) or !this.OpenMenu() or this.QuestsTabButton.CheckColors(EquipmentMenu.TabButtonColors))
-            return False
+        if (!this.IsOn)
         return True
+
+    Switch IndexOp
+    {
+    Case 0:
+        If (!this.OpenEquipmentTab())
+            Return True
+    Case 1:
+        if (!this.BotScrollBuyButton.CheckColors(EquipmentMenu.ScrollBarColors))
+        {
+            Loop 4
+            {
+                if (this.BuyButtonsNoBar[5 - A_Index].CheckColors(EquipmentMenu.GreenColors))
+                {
+                    this.BuyButtonsNoBar[5 - A_Index].Click()
+                    return True
+                }
+            }
+        }
+        this.BotScrollBuyButton.Click(200,100)
+    Case 2:
+        {
+            if (this.BotBuyButtons[1].CheckColors(EquipmentMenu.GreenColors))
+                this.BotBuyButtons[1].Click()
+            Return True
+        }
+    Default:
+        {
+            Return False
+        }
     }
+    Return False
+
+}
+
+UpgradeAll()
+{
+    if (!this.IsOn or !this.OpenUpdatesTab())
+    return False
+
+Loop 3
+    this.UpdateAllButton.Click()
+
+return True
+}
+
+CompleteAllQuests()
+{
+    if (!this.IsOn or !this.OpenQuestsTab())
+    return False
+
+if (this.TopScrollQuestButton.CheckColors(EquipmentMenu.ScrollBarColors))
+    this.TopScrollQuestButton.Click(200,100)
+
+Loop 5
+{
+    For Index, QButton in this.QuestButtons
+    {
+        if (!this.IsOn)
+            return
+        if (QButton.CheckColors(EquipmentMenu.GreenColors))
+            QButton.Click()
+    }
+    Loop 8 
+        Send {WheelDown}
+    Sleep 300
+}
+
+return True
+}
+
+CheckQuestUpdates()
+{
+    if (!this.IsOn or (!this.IsOpen and !this.IsUpdated) or !this.OpenMenu() or this.QuestsTabButton.CheckColors(EquipmentMenu.TabButtonColors))
+    return False
+return True
+}
 }
