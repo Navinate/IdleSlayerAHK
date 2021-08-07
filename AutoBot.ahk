@@ -28,7 +28,7 @@ Class AutoBot
     BottomToggle := False
     BoostToggle := False
 
-    BuyPeriod := 150
+    BuyPeriod := 900
     BuyOldQMax := False
 
     RunningFunc := ""
