@@ -11,7 +11,7 @@ Class ChestHunt
     _IsOpen := False
     IsOn := False
     static RedColors := [0x0000AD, 0x0000B4]
-    static ChestKeyHoleColor := 0x31BBFF
+    static ChestKeyHoleColors := [0x31BBFF, 0x2FB4F5]
 
     __New(SRC)
     {
@@ -44,7 +44,7 @@ Class ChestHunt
             {
                 For Index, Value in this.Chests
                 {
-                    if (!Value.CheckColor(ChestHunt.ChestKeyHoleColor))
+                    if (!Value.CheckColors(ChestHunt.ChestKeyHoleColors))
                         return False
                 }
                 this._IsOpen := True
@@ -73,7 +73,7 @@ Class ChestHunt
                 this._IsOpen := False
                 Break
             }
-            if (ChestInfo.CheckColor(ChestHunt.ChestKeyHoleColor))
+            if (ChestInfo.CheckColors(ChestHunt.ChestKeyHoleColors))
                 ChestInfo.Click(200)
         }
     }
