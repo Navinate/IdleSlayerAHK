@@ -74,7 +74,7 @@ Class ChestHunt
                 Break
             }
             if (ChestInfo.CheckColors(ChestHunt.ChestKeyHoleColors))
-                ChestInfo.Click(200)
+                ChestInfo.Click(1000)
         }
     }
 

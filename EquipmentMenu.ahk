@@ -299,7 +299,7 @@ if (this.TopScrollQuestButton.CheckColors(EquipmentMenu.ScrollBarColors))
 }
 Loop 5
 {
-    For Index, QButton in this.QBs
+    For Index, QButton in QBs
     {
         if (!this.IsOn)
             return
