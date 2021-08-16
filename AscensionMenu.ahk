@@ -67,7 +67,7 @@ Class AscensionMenu
 
     InitMinionButtons()
     {
-        this.TopScrollButton := New PixelInfo(this.SRC.GetX(0.4719), this.SRC.GetY(0.3125), True, 0xD6D6D6) ; 615, 270
+        ; this.TopScrollButton := New PixelInfo(this.SRC.GetX(0.4719), this.SRC.GetY(0.3125), True, 0xD6D6D6) ; 615, 270
         this.BotScrollButton := New PixelInfo(this.SRC.GetX(0.4719), this.SRC.GetY(0.8403), True, 0xD6D6D6) ; 615, 650
 
         MissionButtonX := this.SRC.GetX(0.4368) ; 570
@@ -75,10 +75,10 @@ Class AscensionMenu
         PrestigeButtonX := this.SRC.getX(0.1735) ; 230
 
         DeltaY := this.SRC.getDY(0.2084) ; 150
-        MissionButtonY := this.SRC.GetY(0.3542)
-        MaxTextY := this.SRC.GetY(0.3348)
+        MissionButtonY := this.SRC.GetY(0.4667)
+        MaxTextY := this.SRC.GetY(0.4473)
         this.TopMinions := []
-        Loop 3
+        Loop 2
         {
             this.TopMinions.Push({ MissionButton: (New PixelInfo(MissionButtonX, MissionButtonY + DeltaY * (A_Index - 1))), MaxText: (New PixelInfo(MaxTextX, MaxTextY + DeltaY * (A_Index - 1))), PrestigeButton: (New PixelInfo(PrestigeButtonX, MaxTextY + DeltaY * (A_Index - 1))) }) ; 300, 450, 600
         }
@@ -211,14 +211,16 @@ Class AscensionMenu
             if (!this.OpenMinionsTab())
                 return True
         case 1:
-            this.TopScrollButton.Click(200,100)
-        case 2,3,4:
-            this.RestartMission(this.TopMinions[IndexOp-1], AutoPrestige)
-        case 5:
             this.BotScrollButton.Click(200,100)
-        case 6,7:
-            this.RestartMission(this.BotMinions[IndexOp-5], AutoPrestige)
-        case 8:
+        case 2,3,5,6:
+            this.RestartMission(this.BotMinions[Mod(IndexOp - 1, 3)], AutoPrestige)
+        case 4,7:
+            Loop 6 
+                Send {WheelUp}
+            Sleep 300
+        case 8, 9:
+            this.RestartMission(this.TopMinions[IndexOp-7], AutoPrestige)
+        case 10:
             {
                 Return True
             }
