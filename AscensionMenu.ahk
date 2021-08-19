@@ -8,7 +8,6 @@ SetWorkingDir %A_ScriptDir%	; Ensures a consistent starting directory.
 
 Class AscensionMenu
 {
-    _IsOpen := False
     IsOn := False
 
     static MenuButtonColors := [0xA44100, 0xAB4400]
@@ -94,13 +93,9 @@ Class AscensionMenu
     {
         get
         {
-            if (this.MenuButton.CheckColors(AscensionMenu.MenuButtonColors) or !this.CloseButton.CheckColor(AscensionMenu.CloseButtonColor))
-                this._IsOpen := False
-            return this._IsOpen
-        }
-        set
-        {
-            return this._IsOpen := value
+            if (this.MenuButton.CheckColors(AscensionMenu.MenuButtonColors))
+                return False
+            return !this.CloseButton.CheckColor(AscensionMenu.CloseButtonColor)
         }
     }
 
@@ -117,20 +112,14 @@ Class AscensionMenu
     OpenMenu(Delay := 150)
     {
         if (this.IsOn and !this.IsOpen)
-        {
             this.MenuButton.Click(Delay)
-            this.IsOpen := True
-        }
         return this.IsOpen
     }
 
     CloseMenu()
     {
         if (this.IsOn and this.IsOpen)
-        {
             this.CloseButton.Click()
-            this.IsOpen := False
-        }
         return !this.IsOpen
     }
 
@@ -180,11 +169,8 @@ Class AscensionMenu
         Success := False
         If (this.ModalYesButton.CheckColor(AscensionMenu.GreenColor))
             Success := True
-
+            
         this.ModalYesButton.Click()
-
-        If (Success)
-            this.IsOpen := False
 
         return Success
     }
