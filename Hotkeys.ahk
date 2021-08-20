@@ -70,7 +70,7 @@ Bot := New AutoBot()
         IsOn := Bot.Game.AscensionMenu.IsOn
         Bot.ClickToggle := False
         Bot.Game.AscensionMenu.IsOn := True
-        Loop 10
+        Loop 13
             Bot.Game.AscensionMenu.Minions(A_Index - 1)
         Bot.Game.AscensionMenu.CloseMenu()
         Bot.ClickToggle := ClickToggle

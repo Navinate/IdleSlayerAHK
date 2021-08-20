@@ -13,11 +13,12 @@ Class AscensionMenu
     static MenuButtonColors := [0xA44100, 0xAB4400]
     static TabButtonColors := [0x243388, 0x25358E]
     static CloseButtonColor := 0x1111AD
-    static OnMissionColor := 0xCF5F9B
+    static OnMissionColors := [0xC75B95, 0xCF5F9B]
     static CompleteMissionColors := [0x23AA11, 0x22A310]
     static StartMissionColors := [0x8B1856, 0x861753]
+    static MaxColors := [0xFFFFFF, 0xD3D0D1]
+    static OrangeColors := [0x0093FF, 0x008DF5]
     static GreenColor := 0x00A100
-    static WhiteColor := 0xFFFFFF
 
     __New(SRC)
     {
@@ -82,10 +83,10 @@ Class AscensionMenu
             this.TopMinions.Push({ MissionButton: (New PixelInfo(MissionButtonX, MissionButtonY + DeltaY * (A_Index - 1))), MaxText: (New PixelInfo(MaxTextX, MaxTextY + DeltaY * (A_Index - 1))), PrestigeButton: (New PixelInfo(PrestigeButtonX, MaxTextY + DeltaY * (A_Index - 1))) }) ; 300, 450, 600
         }
 
-        MissionButtonY := this.SRC.GetY(0.5139)
-        MaxTextY := this.SRC.GetY(0.4848)
+        MissionButtonY := this.SRC.GetY(0.3055)
+        MaxTextY := this.SRC.GetY(0.2764)
         this.BotMinions := []
-        Loop 2
+        Loop 3
             this.BotMinions.Push({ MissionButton: New PixelInfo(MissionButtonX, MissionButtonY + DeltaY * (A_Index - 1)), MaxText: New PixelInfo(MaxTextX, MaxTextY + DeltaY * (A_Index - 1)), PrestigeButton: New PixelInfo(PrestigeButtonX, MaxTextY + DeltaY * (A_Index - 1)) }) ; 415, 565
     }
 
@@ -95,7 +96,7 @@ Class AscensionMenu
         {
             if (this.MenuButton.CheckColors(AscensionMenu.MenuButtonColors))
                 return False
-            return !this.CloseButton.CheckColor(AscensionMenu.CloseButtonColor)
+            return this.CloseButton.CheckColor(AscensionMenu.CloseButtonColor)
         }
     }
 
@@ -169,7 +170,7 @@ Class AscensionMenu
         Success := False
         If (this.ModalYesButton.CheckColor(AscensionMenu.GreenColor))
             Success := True
-            
+
         this.ModalYesButton.Click()
 
         return Success
@@ -177,13 +178,15 @@ Class AscensionMenu
 
     RestartMission(MinionInfo, Prestige := False)
     {
-        MinionInfo.MissionButton.Click()
-        if (Prestige and MinionInfo.MaxText.CheckColor(AscensionMenu.WhiteColor))
+        if (MinionInfo.MissionButton.CheckColors(AscensionMenu.CompleteMissionColors))
+            MinionInfo.MissionButton.Click()
+        if (Prestige and MinionInfo.MaxText.CheckColor(AscensionMenu.WhiteColor) and MinionInfo.PrestigeButton.CheckColors(AscensionMenu.OrangeColors))
         {
             MinionInfo.PrestigeButton.Click(200)
             this.ModalYesButton.Click(200)
         }
-        MinionInfo.MissionButton.Click()
+        if (MinionInfo.MissionButton.CheckColors(AscensionMenu.StartMissionColors))
+            MinionInfo.MissionButton.Click()
     }
 
     Minions(IndexOp, AutoPrestige := False)
@@ -198,15 +201,15 @@ Class AscensionMenu
                 return True
         case 1:
             this.BotScrollButton.Click(200,100)
-        case 2,3,5,6:
-            this.RestartMission(this.BotMinions[Mod(IndexOp - 1, 3)], AutoPrestige)
-        case 4,7:
+        case 2,3,4,6,7,8:
+            this.RestartMission(this.BotMinions[Mod(IndexOp - 1, 4)], AutoPrestige)
+        case 5,9:
             Loop 6 
                 Send {WheelUp}
             Sleep 300
-        case 8, 9:
-            this.RestartMission(this.TopMinions[IndexOp-7], AutoPrestige)
-        case 10:
+        case 10, 11:
+            this.RestartMission(this.TopMinions[IndexOp-9], AutoPrestige)
+        case 12:
             {
                 Return True
             }
