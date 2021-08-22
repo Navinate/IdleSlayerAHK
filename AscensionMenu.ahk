@@ -18,7 +18,7 @@ Class AscensionMenu
     static StartMissionColors := [0x8B1856, 0x861753]
     static MaxColors := [0xFFFFFF, 0xD3D0D1]
     static OrangeColors := [0x0093FF, 0x008DF5]
-    static GreenColor := 0x00A100
+    static GreenColors := [0x00A100, 0x00A800]
 
     __New(SRC)
     {
@@ -168,7 +168,7 @@ Class AscensionMenu
         this.AscendButton.Click(200)
 
         Success := False
-        If (this.ModalYesButton.CheckColor(AscensionMenu.GreenColor))
+        If (this.ModalYesButton.CheckColors(AscensionMenu.GreenColors))
             Success := True
 
         this.ModalYesButton.Click()

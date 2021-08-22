@@ -48,6 +48,7 @@ Class GameScreen
         this.RageButton := New PixelInfo(this.SRC.GetX(0.8547), this.SRC.GetY(0.1223)) ; 1105, 133
         this.PortalButton := New PixelInfo(this.SRC.GetX(0.9204), this.SRC.GetY(0.1181)) ; 1186, 116
         this.SilverButton := New PixelInfo(this.SRC.GetX(0.5415), this.SRC.GetY(0.0209)) ; 701 46
+        this.ExitYesModalButton := New PixelInfo(this.SRC.GetX(0.4375), this.SRC.GetY(0.7362)) ; 560 530
     }
 
     CheckToggle()
