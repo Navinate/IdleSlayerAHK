@@ -71,20 +71,28 @@ Class AscensionMenu
         this.BotScrollButton := New PixelInfo(this.SRC.GetX(0.4719), this.SRC.GetY(0.8403), True, 0xD6D6D6) ; 615, 650
 
         MissionButtonX := this.SRC.GetX(0.4368) ; 570
-        MaxTextX := this.SRC.GetX(0.1102) ; 149
-        PrestigeButtonX := this.SRC.getX(0.1735) ; 230
+        MaxTextX := this.SRC.GetX(0.1165) ; 157
+        PrestigeButtonX := this.SRC.getX(0.2110) ; 278
 
         DeltaY := this.SRC.getDY(0.2084) ; 150
-        MissionButtonY := this.SRC.GetY(0.4667)
-        MaxTextY := this.SRC.GetY(0.4473)
-        this.TopMinions := []
+        MissionButtonY := this.SRC.GetY(0.3348) ; 272; 375
+        MaxTextY := this.SRC.GetY(0.3125) ; 256, 359
+        this.TopMinionsWithoutBar := []
         Loop 2
         {
-            this.TopMinions.Push({ MissionButton: (New PixelInfo(MissionButtonX, MissionButtonY + DeltaY * (A_Index - 1))), MaxText: (New PixelInfo(MaxTextX, MaxTextY + DeltaY * (A_Index - 1))), PrestigeButton: (New PixelInfo(PrestigeButtonX, MaxTextY + DeltaY * (A_Index - 1))) }) ; 300, 450, 600
+            this.TopMinionsWithoutBar.Push({ MissionButton: (New PixelInfo(MissionButtonX, MissionButtonY + DeltaY * (A_Index - 1))), MaxText: (New PixelInfo(MaxTextX, MaxTextY + DeltaY * (A_Index - 1))), PrestigeButton: (New PixelInfo(PrestigeButtonX, MaxTextY + DeltaY * (A_Index - 1))) }) ; 300, 450, 600
         }
 
-        MissionButtonY := this.SRC.GetY(0.3055)
-        MaxTextY := this.SRC.GetY(0.2764)
+        MissionButtonY := this.SRC.GetY(0.4778) ; 272; 375
+        MaxTextY := this.SRC.GetY(0.4556) ; 256, 359
+        this.TopMinionsWithBar := []
+        Loop 2
+        {
+            this.TopMinionsWithBar.Push({ MissionButton: (New PixelInfo(MissionButtonX, MissionButtonY + DeltaY * (A_Index - 1))), MaxText: (New PixelInfo(MaxTextX, MaxTextY + DeltaY * (A_Index - 1))), PrestigeButton: (New PixelInfo(PrestigeButtonX, MaxTextY + DeltaY * (A_Index - 1))) }) ; 300, 450, 600
+        }
+
+        MissionButtonY := this.SRC.GetY(0.307) ; 252
+        MaxTextY := this.SRC.GetY(0.2848) ; 236
         this.BotMinions := []
         Loop 3
             this.BotMinions.Push({ MissionButton: New PixelInfo(MissionButtonX, MissionButtonY + DeltaY * (A_Index - 1)), MaxText: New PixelInfo(MaxTextX, MaxTextY + DeltaY * (A_Index - 1)), PrestigeButton: New PixelInfo(PrestigeButtonX, MaxTextY + DeltaY * (A_Index - 1)) }) ; 415, 565
@@ -179,14 +187,16 @@ Class AscensionMenu
     RestartMission(MinionInfo, Prestige := False)
     {
         if (MinionInfo.MissionButton.CheckColors(AscensionMenu.CompleteMissionColors))
+        {
             MinionInfo.MissionButton.Click()
-        if (Prestige and MinionInfo.MaxText.CheckColor(AscensionMenu.WhiteColor) and MinionInfo.PrestigeButton.CheckColors(AscensionMenu.OrangeColors))
+            MinionInfo.MissionButton.Click()
+        }
+        if (Prestige and MinionInfo.MaxText.CheckColors(AscensionMenu.MaxColors) and MinionInfo.PrestigeButton.CheckColors(AscensionMenu.OrangeColors))
         {
             MinionInfo.PrestigeButton.Click(200)
             this.ModalYesButton.Click(200)
-        }
-        if (MinionInfo.MissionButton.CheckColors(AscensionMenu.StartMissionColors))
             MinionInfo.MissionButton.Click()
+        }
     }
 
     Minions(IndexOp, AutoPrestige := False)
@@ -208,7 +218,8 @@ Class AscensionMenu
                 Send {WheelUp}
             Sleep 300
         case 10, 11:
-            this.RestartMission(this.TopMinions[IndexOp-9], AutoPrestige)
+            this.RestartMission(this.TopMinionsWithBar[IndexOp-9], AutoPrestige)
+            this.RestartMission(this.TopMinionsWithoutBar[IndexOp-9], AutoPrestige)
         case 12:
             {
                 Return True
